@@ -10,3 +10,5 @@ I am learning Python step by step with **hands-on examples** and uploading code 
 - Day01: Introduction to Python ✅
 - Day02: Basic Syntax ✅
 - Day03: Variables & Data Types ✅
+- Day04: Input & Output ✅
+- Day05: Operators ✅

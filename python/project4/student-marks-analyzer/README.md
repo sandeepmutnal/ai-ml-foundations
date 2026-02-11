@@ -1,39 +1,33 @@
 # Student Marks Analyzer (Python)
 
 ## Description
+A Python CLI application that analyzes student marks and calculates total, average, and grade.
 
-A simple Python CLI project that analyzes student marks and calculates:
+This version includes input validation to prevent invalid entries.
 
-* Total marks
-* Average
-* Grade
+---
 
-This project demonstrates Python fundamentals:
+## Features
+- Student name input
+- Multiple subjects support
+- Total calculation
+- Average calculation
+- Grade calculation
+- Input validation (0–100 marks only)
 
-* Variables
-* Data types
-* Loops
-* Conditionals
-* Functions
-* Input/Output
+---
 
-## How to run
+## Concepts Used
+- Variables
+- Lists
+- Loops
+- Conditionals
+- Functions
+- Exception Handling (try/except)
+- Input/Output
 
+---
+
+## How to Run
 ```bash
 python main.py
-```
-
-## Example
-
-```
-Enter student name: Ravi
-Enter number of subjects: 3
-Enter mark 1: 80
-Enter mark 2: 70
-Enter mark 3: 90
-```
-
-## Author
-
-Your Name
-Sandeep Mutnal

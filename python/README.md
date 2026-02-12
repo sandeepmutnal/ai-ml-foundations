@@ -46,6 +46,8 @@ The following projects were built during my Python learning journey:
 - 🎯 Guessing Game  
 - 📊 Student Marks Analyzer  
 - 🏫 Student Management System  
+- 📝 To-Do App  
+
 
 ---
 

@@ -12,12 +12,9 @@ def calculate_grade(avg):
         return "Fail"
 
 
-def main():
-    print("📊 Student Marks Analyzer")
+def add_student():
+    name = input("\nEnter student name: ")
 
-    name = input("Enter student name: ")
-
-    # Validate number of subjects
     while True:
         try:
             subjects = int(input("Enter number of subjects: "))
@@ -32,46 +29,113 @@ def main():
     total = 0
 
     for i in range(subjects):
+        subject_name = input(f"Enter subject {i+1} name: ")
+
         while True:
             try:
-                m = float(input(f"Enter mark {i+1}: "))
+                m = float(input(f"Enter marks for {subject_name}: "))
                 if m < 0 or m > 100:
                     print("Marks must be between 0 and 100.")
                     continue
-                marks.append(m)
+                marks.append({
+                    "subject": subject_name,
+                    "marks": m
+                })
                 total += m
                 break
             except ValueError:
-                print("Invalid input. Enter numeric value.")
+                print("Invalid input. Please enter a number.")
 
     average = total / subjects
     grade = calculate_grade(average)
     status = "PASS" if average >= 50 else "FAIL"
 
-    print("\n--- Result ---")
-    print("Name:", name)
-    print("Total:", total)
-    print("Average:", round(average, 2))
-    print("Grade:", grade)
-    print("Status:", status)
+    student_data = {
+        "name": name,
+        "marks": marks,
+        "total": total,
+        "average": round(average, 2),
+        "grade": grade,
+        "status": status
+    }
 
-    print("\nMarks Entered:")
-    for i, m in enumerate(marks, start=1):
-        print(f"Subject {i}: {m}")
+    print("\nStudent added successfully!")
+    return student_data
 
-    # Save result in script folder
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(script_dir, "result.txt")
+
+def view_students(students):
+    if not students:
+        print("\nNo student data available.")
+        return
+
+    print("\n--- Student Records ---")
+
+    for s in students:
+        print(f"\nName: {s['name']}")
+
+        for subject in s["marks"]:
+            print(f"{subject['subject']}: {subject['marks']}")
+
+        print(f"Total: {s['total']}")
+        print(f"Average: {s['average']}")
+        print(f"Grade: {s['grade']}")
+        print(f"Status: {s['status']}")
+        print("-" * 20)
+
+
+def save_results(students):
+    if not students:
+        print("No students to save.")
+        return
+
+    file_path = os.path.join(os.path.dirname(__file__), "result.txt")
 
     with open(file_path, "w") as f:
-        f.write("Student Marks Analyzer\n")
-        f.write(f"Name: {name}\n")
-        f.write(f"Total: {total}\n")
-        f.write(f"Average: {round(average,2)}\n")
-        f.write(f"Grade: {grade}\n")
-        f.write(f"Status: {status}\n")
+        f.write("Student Marks Analyzer\n\n")
 
-    print("\nResult saved to result.txt")
+        for s in students:
+            f.write(f"Name: {s['name']}\n")
+
+            for subject in s["marks"]:
+                f.write(f"{subject['subject']}: {subject['marks']}\n")
+
+            f.write(f"Total: {s['total']}\n")
+            f.write(f"Average: {s['average']}\n")
+            f.write(f"Grade: {s['grade']}\n")
+            f.write(f"Status: {s['status']}\n")
+            f.write("-" * 20 + "\n")
+
+    print(f"All results saved to: {file_path}")
+
+
+def main():
+    students = []
+
+    while True:
+        print("\n📊 Student Marks Analyzer")
+        print("1. Add Student")
+        print("2. View Students")
+        print("3. Save Results")
+        print("4. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            student = add_student()
+            students.append(student)
+
+        elif choice == "2":
+            view_students(students)
+
+        elif choice == "3":
+            save_results(students)
+
+        elif choice == "4":
+            print("Exiting program...")
+            break
+
+        else:
+            print("Invalid choice. Please select 1-4.")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,10 @@
 Student Marks Analyzer
-Name: san
-Total: 90.0
+
+Name: sandeep
+python: 90.0
+java: 90.0
+Total: 180.0
 Average: 90.0
 Grade: A
 Status: PASS
+--------------------

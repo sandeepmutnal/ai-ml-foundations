@@ -1,6 +1,0 @@
-Student Marks Analyzer
-Name: sandeep
-Total: 74.0
-Average: 37.0
-Grade: Fail
-Status: FAIL

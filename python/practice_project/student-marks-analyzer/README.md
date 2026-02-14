@@ -1,34 +1,40 @@
 # 📊 Student Marks Analyzer (Python)
 
 ## Description
-A Python CLI application that analyzes student marks and calculates total, average, grade, and pass/fail status.
 
-This version includes input validation and saves results to a file.
+A menu-driven Python CLI application that allows users to add multiple students, store subject-wise marks, calculate totals, averages, grades, and pass/fail status, and save results to a file.
+
+This project demonstrates real-world Python fundamentals including data structures, functions, validation, and file handling.
 
 ---
 
 ## Features
-- Student name input
-- Multiple subjects support
-- Subject-wise marks display
+
+- Add multiple students
+- Subject-wise marks entry
+- View all student records
 - Total calculation
 - Average calculation
 - Grade calculation
 - Pass/Fail status
 - Input validation (0–100 marks only)
-- Save result to file
+- Save all results to `result.txt`
+- Menu-driven CLI interface
 
 ---
 
 ## Concepts Used
+
 - Variables
 - Lists
+- Dictionaries
 - Loops
 - Conditionals
 - Functions
-- Exception Handling (try/except)
+- Exception Handling (`try/except`)
 - File Handling
-- Input/Output
+- CLI Menu System
+- Data aggregation
 
 ---
 
@@ -40,29 +46,23 @@ python main.py
 
 ---
 
-## Example Output
+## Example Program Flow
 
 ```
-Student Marks Analyzer
-Enter student name: Alex
-Enter number of subjects: 3
-Enter mark 1: 80
-Enter mark 2: 70
-Enter mark 3: 90
-
---- Result ---
-Name: Alex
-Total: 240
-Average: 80.0
-Grade: B
-Status: PASS
+📊 Student Marks Analyzer
+1. Add Student
+2. View Students
+3. Save Results
+4. Exit
 ```
 
 ---
 
 ## Future Improvements
-- Multiple student support
+
 - CSV file storage
-- Menu-based system
-- GUI version
-- Class statistics
+- JSON database storage
+- Student search feature
+- Edit/delete student records
+- GUI version (Tkinter / Web UI)
+- Class statistics dashboard

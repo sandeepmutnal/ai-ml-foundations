@@ -11,8 +11,6 @@ A simple ATM simulation built using Python.
 - Transaction history
 - Saves data using JSON
 
-
-
 ## How to Run
 
 1. Install Python (3.x)

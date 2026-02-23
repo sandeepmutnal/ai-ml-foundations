@@ -4,12 +4,29 @@ A simple ATM simulation built using Python.
 
 ## 🚀 Features
 
-- PIN authentication (3 attempts)
-- Check balance
-- Deposit & withdraw money
-- Change PIN
-- Transaction history
-- Saves data using JSON
+### 🔐 Authentication
+- PIN login system (3 attempts limit)
+- Secure PIN change (4-digit validation)
+
+### 💰 Banking Operations
+- Check account balance
+- Deposit money (with validation)
+- Withdraw money (with balance check)
+
+### 📊 Transactions
+- Full transaction history
+- Mini statement (last transactions)
+- Timestamp for each transaction
+
+### 💾 Data Persistence
+- Stores data in JSON file
+- Auto-creates file if not exists
+- Saves PIN, balance, and history
+
+### ⚙️ System
+- Menu-driven interface
+- Logout & Exit options
+- Input validation & error handling
 
 ## How to Run
 

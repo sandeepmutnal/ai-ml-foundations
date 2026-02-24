@@ -3,168 +3,177 @@ import json
 import sys
 from datetime import datetime
 
-# ---------- PATH SETUP ----------
+# ---------- PATH ----------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-DATA_FILE = os.path.join(DATA_DIR, "account_data.json")
+DATA_FILE = os.path.join(BASE_DIR, "accounts.json")
 
-os.makedirs(DATA_DIR, exist_ok=True)
-
-# ---------- SAVE ----------
-def save_data(data):
+# ---------- INIT FILE ----------
+if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=4)
+        json.dump({}, f)
 
-# ---------- LOAD ----------
+# ---------- LOAD / SAVE ----------
 def load_data():
-    if not os.path.exists(DATA_FILE):
-        default_data = {
-            "pin": "1234",
-            "balance": 10000,
-            "history": []
-        }
-        save_data(default_data)
-        return default_data
-
     with open(DATA_FILE, "r") as f:
         return json.load(f)
 
-data = load_data()
+def save_data(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=4)
 
 # ---------- HELPERS ----------
 def get_time():
     return datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
-# ---------- FUNCTIONS ----------
+def generate_acc_no(data):
+    return str(100000 + len(data) + 1)
 
-def check_balance():
-    print(f"\n💰 Balance: ₹{data['balance']}")
+# ---------- REGISTER ----------
+def register():
+    data = load_data()
 
-def deposit_money():
-    try:
-        amount = int(input("Enter amount to deposit: ₹"))
+    username = input("Create username: ")
 
-        if amount <= 0:
-            print("❌ Invalid amount")
-            return
+    if username in data:
+        print("❌ User already exists")
+        return
 
-        if amount > 100000:
-            print("⚠️ Deposit limit is ₹1,00,000")
-            return
+    pin = input("Set 4-digit PIN: ")
 
-        data["balance"] += amount
-        data["history"].append(f"{get_time()} → Deposited ₹{amount}")
+    if len(pin) != 4 or not pin.isdigit():
+        print("❌ Invalid PIN")
+        return
+
+    acc_no = generate_acc_no(data)
+
+    data[username] = {
+        "account_no": acc_no,
+        "pin": pin,
+        "balance": 10000,
+        "history": []
+    }
+
+    save_data(data)
+
+    print(f"✅ Account created! Account No: {acc_no}")
+
+# ---------- LOGIN ----------
+def login():
+    data = load_data()
+
+    username = input("Enter username: ")
+
+    if username not in data:
+        print("❌ User not found")
+        return None
+
+    for i in range(3):
+        pin = input("Enter PIN: ")
+        if pin == data[username]["pin"]:
+            print("✅ Login success")
+            return username
+        else:
+            print(f"❌ Wrong PIN ({i+1}/3)")
+
+    print("🚫 Account blocked")
+    return None
+
+# ---------- FEATURES ----------
+def check_balance(user, data):
+    print(f"💰 Balance: ₹{data[user]['balance']}")
+
+def deposit(user, data):
+    amt = int(input("Enter amount: ₹"))
+    if amt > 0:
+        data[user]["balance"] += amt
+        data[user]["history"].append(f"{get_time()} → Deposited ₹{amt}")
         save_data(data)
+        print("✅ Deposited")
 
-        print("✅ Deposited successfully")
+def withdraw(user, data):
+    amt = int(input("Enter amount: ₹"))
+    if amt <= data[user]["balance"]:
+        data[user]["balance"] -= amt
+        data[user]["history"].append(f"{get_time()} → Withdraw ₹{amt}")
+        save_data(data)
+        print("💵 Done")
+    else:
+        print("❌ Insufficient balance")
 
-    except ValueError:
-        print("❌ Numbers only")
+def transfer(user, data):
+    receiver = input("Receiver username: ")
 
-def withdraw_money():
-    try:
-        amount = int(input("Enter amount to withdraw: ₹"))
+    if receiver not in data:
+        print("❌ User not found")
+        return
 
-        if amount <= 0:
-            print("❌ Invalid amount")
-        elif amount > data["balance"]:
-            print("❌ Insufficient balance")
+    amt = int(input("Amount: ₹"))
+
+    if amt <= data[user]["balance"]:
+        data[user]["balance"] -= amt
+        data[receiver]["balance"] += amt
+
+        data[user]["history"].append(f"{get_time()} → Sent ₹{amt} to {receiver}")
+        data[receiver]["history"].append(f"{get_time()} → Received ₹{amt} from {user}")
+
+        save_data(data)
+        print("✅ Transfer success")
+    else:
+        print("❌ Not enough balance")
+
+def history(user, data):
+    for h in data[user]["history"]:
+        print("➡", h)
+
+# ---------- MENU ----------
+def menu(user):
+    while True:
+        data = load_data()
+
+        print("\n🏦 ATM MENU")
+        print("1. Balance")
+        print("2. Deposit")
+        print("3. Withdraw")
+        print("4. Transfer")
+        print("5. History")
+        print("6. Logout")
+
+        ch = input("Choose: ")
+
+        if ch == "1":
+            check_balance(user, data)
+        elif ch == "2":
+            deposit(user, data)
+        elif ch == "3":
+            withdraw(user, data)
+        elif ch == "4":
+            transfer(user, data)
+        elif ch == "5":
+            history(user, data)
+        elif ch == "6":
+            break
         else:
-            data["balance"] -= amount
-            data["history"].append(f"{get_time()} → Withdrawn ₹{amount}")
-            save_data(data)
-
-            print("💵 Collect your cash")
-
-    except ValueError:
-        print("❌ Numbers only")
-
-def change_pin():
-    old_pin = input("Enter old PIN: ")
-
-    if old_pin == data["pin"]:
-        new_pin = input("Enter new PIN: ")
-
-        if len(new_pin) == 4 and new_pin.isdigit():
-            data["pin"] = new_pin
-            save_data(data)
-            print("✅ PIN changed")
-        else:
-            print("❌ PIN must be 4 digits")
-    else:
-        print("❌ Wrong PIN")
-
-def show_history():
-    print("\n📜 Full Transaction History:")
-    if data["history"]:
-        for t in data["history"]:
-            print("➡", t)
-    else:
-        print("No transactions")
-
-def mini_statement():
-    print("\n📄 Last 5 Transactions:")
-    last = data["history"][-5:]
-    if last:
-        for t in last:
-            print("➡", t)
-    else:
-        print("No transactions")
+            print("❌ Invalid")
 
 # ---------- MAIN ----------
-
-def login():
-    attempts = 0
-    while attempts < 3:
-        pin = input("Enter PIN: ")
-        if pin == data["pin"]:
-            print("✅ Login successful")
-            return True
-        else:
-            attempts += 1
-            print(f"❌ Wrong PIN ({attempts}/3)")
-    print("🚫 Card blocked")
-    return False
-
-def atm_menu():
+def main():
     while True:
-        print("\n====== 🏦 ATM ======")
-        print("1. Check Balance")
-        print("2. Withdraw")
-        print("3. Deposit")
-        print("4. Change PIN")
-        print("5. Full History")
-        print("6. Mini Statement")
-        print("7. Logout")
-        print("8. Exit")
+        print("\n1. Register")
+        print("2. Login")
+        print("3. Exit")
 
-        choice = input("Choose: ")
+        ch = input("Choose: ")
 
-        if choice == "1":
-            check_balance()
-        elif choice == "2":
-            withdraw_money()
-        elif choice == "3":
-            deposit_money()
-        elif choice == "4":
-            change_pin()
-        elif choice == "5":
-            show_history()
-        elif choice == "6":
-            mini_statement()
-        elif choice == "7":
-            print("🔒 Logged out")
-            return
-        elif choice == "8":
-            print("🙏 Thank you")
+        if ch == "1":
+            register()
+        elif ch == "2":
+            user = login()
+            if user:
+                menu(user)
+        elif ch == "3":
             sys.exit()
         else:
-            print("❌ Invalid option")
+            print("❌ Invalid")
 
-# ---------- RUN ----------
 if __name__ == "__main__":
-    print("📁 Saving to:", DATA_FILE)
-
-    while True:
-        if login():
-            atm_menu()
+    main()

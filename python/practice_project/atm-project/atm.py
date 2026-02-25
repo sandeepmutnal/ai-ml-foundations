@@ -28,6 +28,9 @@ def get_time():
 def generate_acc_no(data):
     return str(100000 + len(data) + 1)
 
+def validate_pin(pin):
+    return len(pin) == 4 and pin.isdigit()
+
 # ---------- REGISTER ----------
 def register():
     data = load_data()
@@ -40,8 +43,8 @@ def register():
 
     pin = input("Set 4-digit PIN: ")
 
-    if len(pin) != 4 or not pin.isdigit():
-        print("❌ Invalid PIN")
+    if not validate_pin(pin):
+        print("❌ Invalid PIN (must be 4 digits)")
         return
 
     acc_no = generate_acc_no(data)
@@ -54,24 +57,30 @@ def register():
     }
 
     save_data(data)
-
     print(f"✅ Account created! Account No: {acc_no}")
 
-# ---------- LOGIN ----------
+# ---------- LOGIN (USERNAME / ACC NO) ----------
 def login():
     data = load_data()
 
-    username = input("Enter username: ")
+    user_input = input("Enter Username or Account No: ")
 
-    if username not in data:
+    user = None
+
+    for username in data:
+        if username == user_input or data[username]["account_no"] == user_input:
+            user = username
+            break
+
+    if not user:
         print("❌ User not found")
         return None
 
     for i in range(3):
         pin = input("Enter PIN: ")
-        if pin == data[username]["pin"]:
+        if pin == data[user]["pin"]:
             print("✅ Login success")
-            return username
+            return user
         else:
             print(f"❌ Wrong PIN ({i+1}/3)")
 
@@ -83,22 +92,39 @@ def check_balance(user, data):
     print(f"💰 Balance: ₹{data[user]['balance']}")
 
 def deposit(user, data):
-    amt = int(input("Enter amount: ₹"))
-    if amt > 0:
+    try:
+        amt = int(input("Enter amount: ₹"))
+
+        if amt <= 0:
+            print("❌ Invalid amount")
+            return
+
         data[user]["balance"] += amt
         data[user]["history"].append(f"{get_time()} → Deposited ₹{amt}")
         save_data(data)
+
         print("✅ Deposited")
 
+    except:
+        print("❌ Numbers only")
+
 def withdraw(user, data):
-    amt = int(input("Enter amount: ₹"))
-    if amt <= data[user]["balance"]:
-        data[user]["balance"] -= amt
-        data[user]["history"].append(f"{get_time()} → Withdraw ₹{amt}")
-        save_data(data)
-        print("💵 Done")
-    else:
-        print("❌ Insufficient balance")
+    try:
+        amt = int(input("Enter amount: ₹"))
+
+        if amt <= 0:
+            print("❌ Invalid amount")
+        elif amt > data[user]["balance"]:
+            print("❌ Insufficient balance")
+        else:
+            data[user]["balance"] -= amt
+            data[user]["history"].append(f"{get_time()} → Withdraw ₹{amt}")
+            save_data(data)
+
+            print("💵 Done")
+
+    except:
+        print("❌ Numbers only")
 
 def transfer(user, data):
     receiver = input("Receiver username: ")
@@ -107,23 +133,55 @@ def transfer(user, data):
         print("❌ User not found")
         return
 
-    amt = int(input("Amount: ₹"))
+    try:
+        amt = int(input("Amount: ₹"))
 
-    if amt <= data[user]["balance"]:
-        data[user]["balance"] -= amt
-        data[receiver]["balance"] += amt
+        if amt <= 0:
+            print("❌ Invalid amount")
+        elif amt > data[user]["balance"]:
+            print("❌ Not enough balance")
+        else:
+            data[user]["balance"] -= amt
+            data[receiver]["balance"] += amt
 
-        data[user]["history"].append(f"{get_time()} → Sent ₹{amt} to {receiver}")
-        data[receiver]["history"].append(f"{get_time()} → Received ₹{amt} from {user}")
+            data[user]["history"].append(f"{get_time()} → Sent ₹{amt} to {receiver}")
+            data[receiver]["history"].append(f"{get_time()} → Received ₹{amt} from {user}")
 
-        save_data(data)
-        print("✅ Transfer success")
+            save_data(data)
+            print("✅ Transfer success")
+
+    except:
+        print("❌ Numbers only")
+
+def show_history(user, data):
+    print("\n📜 Full History:")
+    if data[user]["history"]:
+        for h in data[user]["history"]:
+            print("➡", h)
     else:
-        print("❌ Not enough balance")
+        print("No transactions")
 
-def history(user, data):
-    for h in data[user]["history"]:
-        print("➡", h)
+def mini_statement(user, data):
+    print("\n📄 Last 5 Transactions:")
+    last = data[user]["history"][-5:]
+    if last:
+        for h in last:
+            print("➡", h)
+    else:
+        print("No transactions")
+
+# 🆕 DELETE ACCOUNT
+def delete_account(user, data):
+    confirm = input("Type YES to delete account: ")
+
+    if confirm == "YES":
+        del data[user]
+        save_data(data)
+        print("❌ Account deleted")
+        return True
+    else:
+        print("Cancelled")
+        return False
 
 # ---------- MENU ----------
 def menu(user):
@@ -135,8 +193,10 @@ def menu(user):
         print("2. Deposit")
         print("3. Withdraw")
         print("4. Transfer")
-        print("5. History")
-        print("6. Logout")
+        print("5. Full History")
+        print("6. Mini Statement")
+        print("7. Delete Account")
+        print("8. Logout")
 
         ch = input("Choose: ")
 
@@ -149,8 +209,13 @@ def menu(user):
         elif ch == "4":
             transfer(user, data)
         elif ch == "5":
-            history(user, data)
+            show_history(user, data)
         elif ch == "6":
+            mini_statement(user, data)
+        elif ch == "7":
+            if delete_account(user, data):
+                break
+        elif ch == "8":
             break
         else:
             print("❌ Invalid")

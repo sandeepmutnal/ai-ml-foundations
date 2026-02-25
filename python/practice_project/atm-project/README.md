@@ -3,15 +3,17 @@
 A simple ATM simulation built using Python.
 
 ## 🚀 Features
-- 🔐 PIN authentication (3 attempts)
-- 💰 Check balance
-- 💵 Deposit & withdraw money
-- 💸 Transfer money (NEW)
-- 🔄 Change PIN
-- 📜 Full transaction history (with timestamp)
-- 📄 Mini statement (last 5 transactions)
-- ⏳ Auto logout on inactivity
-- 💾 Data stored using JSON
+-👥 Multi-user system (multiple accounts supported)
+🔐 Secure login with Username + 4-digit PIN
+🏦 Unique account number generation for each user
+💰 Check account balance
+💵 Deposit money with validation
+💸 Withdraw money with balance check
+🔁 Transfer money between users
+📜 Full transaction history tracking
+🕒 Timestamp for every transaction
+💾 Persistent data storage using JSON (accounts.json)
+❌ Invalid input handling and basic security checks
 
 ## How to Run
 

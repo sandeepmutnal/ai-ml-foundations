@@ -1,6 +1,7 @@
-# 🧮 Advanced Python CLI Calculator
+# 🧮 Calculator v2 (Python Project)
 
-A professional command-line calculator built using Python with persistent storage and advanced features.
+A simple command-line calculator built using Python.  
+This project is beginner-friendly and demonstrates core programming concepts.
 
 ---
 
@@ -9,16 +10,7 @@ A professional command-line calculator built using Python with persistent storag
 - ➕ Addition
 - ➖ Subtraction
 - ✖️ Multiplication
-- ➗ Division (with zero handling)
-- 🧮 Modulus
-- 🔼 Power
-- ⬇️ Floor Division
-- √ Square Root
-- 📜 Persistent History (saved using JSON)
-- 🗑️ Clear History
-- 🔐 Input Validation
-- ⚡ Clean CLI Interface
+- ➗ Division
+- ❌ Error handling (invalid input, divide by zero)
+- 🔁 Continuous loop until user exits
 
----
-
-## 📂 Project Structure

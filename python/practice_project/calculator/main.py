@@ -3,6 +3,8 @@ import math
 # ---------- GLOBAL ----------
 history = []
 last_result = None
+memory = None
+last_operation = None
 
 # ---------- OPERATIONS ----------
 def add(a, b): return a + b
@@ -19,6 +21,9 @@ def square_root(a):
 
 def percentage(a, b):
     return (a / 100) * b
+
+def minimum(a, b): return min(a, b)
+def maximum(a, b): return max(a, b)
 
 # ---------- SCIENTIFIC ----------
 def sin(x): return math.sin(math.radians(x))
@@ -39,6 +44,10 @@ def show_history():
         for item in history:
             print(item)
 
+def clear_history():
+    history.clear()
+    print("🧹 History cleared")
+
 def undo_last():
     if history:
         removed = history.pop()
@@ -48,9 +57,9 @@ def undo_last():
 
 # ---------- MENU ----------
 def menu():
-    print("\n" + "="*40)
-    print("🧮 ADVANCED CALCULATOR v2")
-    print("="*40)
+    print("\n" + "="*45)
+    print("🧮 ADVANCED CALCULATOR v3")
+    print("="*45)
     print("1. Add")
     print("2. Subtract")
     print("3. Multiply")
@@ -61,10 +70,15 @@ def menu():
     print("8. sin(x)")
     print("9. cos(x)")
     print("10. log(x)")
-    print("11. Show History")
-    print("12. Undo Last")
-    print("13. Use Last Result")
-    print("14. Exit")
+    print("11. Min")
+    print("12. Max")
+    print("13. Show History")
+    print("14. Clear History")
+    print("15. Undo Last")
+    print("16. Store in Memory")
+    print("17. Recall Memory")
+    print("18. Repeat Last Operation")
+    print("19. Exit")
 
 # ---------- INPUT ----------
 def get_number(prompt):
@@ -79,23 +93,46 @@ while True:
     menu()
     choice = input("Enter choice: ")
 
-    if choice == "14":
+    if choice == "19":
         print("👋 Goodbye!")
         break
 
-    elif choice == "11":
+    elif choice == "13":
         show_history()
         continue
 
-    elif choice == "12":
+    elif choice == "14":
+        clear_history()
+        continue
+
+    elif choice == "15":
         undo_last()
         continue
 
-    elif choice == "13":
-        if last_result is None:
-            print("❌ No previous result")
+    elif choice == "16":
+        if last_result is not None:
+            memory = last_result
+            print(f"💾 Stored: {memory}")
         else:
-            print("👉 Last Result:", last_result)
+            print("❌ No result to store")
+        continue
+
+    elif choice == "17":
+        if memory is not None:
+            print(f"📌 Memory: {memory}")
+        else:
+            print("❌ Memory empty")
+        continue
+
+    elif choice == "18":
+        if last_operation:
+            print("🔁 Repeating last operation...")
+            result = last_operation()
+            print("Result:", result)
+            add_to_history(f"Repeat = {result}")
+            last_result = result
+        else:
+            print("❌ No operation to repeat")
         continue
 
     # ---------- SINGLE INPUT ----------
@@ -118,22 +155,12 @@ while True:
         print("Result:", result)
         add_to_history(f"{exp} = {result}")
         last_result = result
+        last_operation = lambda: result
 
     # ---------- DOUBLE INPUT ----------
-    elif choice in ["1","2","3","4","5","7"]:
-        print("👉 Type 'M' to use last result")
-
-        val1 = input("Enter first number: ")
-        if val1.lower() == "m" and last_result is not None:
-            num1 = last_result
-        else:
-            num1 = float(val1)
-
-        val2 = input("Enter second number: ")
-        if val2.lower() == "m" and last_result is not None:
-            num2 = last_result
-        else:
-            num2 = float(val2)
+    elif choice in ["1","2","3","4","5","7","11","12"]:
+        num1 = get_number("Enter first number: ")
+        num2 = get_number("Enter second number: ")
 
         if choice == "1":
             result = add(num1, num2)
@@ -153,10 +180,17 @@ while True:
         elif choice == "7":
             result = percentage(num1, num2)
             op = "% of"
+        elif choice == "11":
+            result = minimum(num1, num2)
+            op = "min"
+        elif choice == "12":
+            result = maximum(num1, num2)
+            op = "max"
 
         print("Result:", result)
         add_to_history(f"{num1} {op} {num2} = {result}")
         last_result = result
+        last_operation = lambda: result
 
     else:
         print("❌ Invalid choice")

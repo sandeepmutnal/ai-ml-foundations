@@ -3,17 +3,23 @@
 A simple ATM simulation built using Python.
 
 ## 🚀 Features
--👥 Multi-user system (multiple accounts supported)
-🔐 Secure login with Username + 4-digit PIN
-🏦 Unique account number generation for each user
+
+👥 Multi-user system (multiple accounts supported)
+🔐 Login using Username or Account Number + 4-digit PIN
+🏦 Auto-generated unique account number for each user
 💰 Check account balance
 💵 Deposit money with validation
 💸 Withdraw money with balance check
 🔁 Transfer money between users
 📜 Full transaction history tracking
-🕒 Timestamp for every transaction
+📄 Mini statement (last 5 transactions)
+🕒 Timestamp added for every transaction
+❌ Delete account with confirmation
+🧠 Strong input validation (amount & PIN checks)
+🚫 3-attempt login security (account block protection)
 💾 Persistent data storage using JSON (accounts.json)
-❌ Invalid input handling and basic security checks
+⚠️ Error handling for invalid inputs
+
 
 ## How to Run
 

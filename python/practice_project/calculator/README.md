@@ -1,16 +1,31 @@
-# 🧮 Calculator v2 (Python Project)
+# 🧮 Advanced Calculator v3 (Python CLI)
 
-A simple command-line calculator built using Python.  
-This project is beginner-friendly and demonstrates core programming concepts.
+A powerful command-line calculator built using Python with advanced features and clean structure.
 
 ---
 
 ## 🚀 Features
 
+### 🔢 Basic Operations
 - ➕ Addition
 - ➖ Subtraction
 - ✖️ Multiplication
-- ➗ Division
-- ❌ Error handling (invalid input, divide by zero)
-- 🔁 Continuous loop until user exits
+- ➗ Division (zero handling)
 
+### 📊 Advanced Operations
+- 🔼 Power
+- √ Square Root
+- 📈 Percentage
+- 📉 Min / Max
+
+### 🧪 Scientific Functions
+- sin(x)
+- cos(x)
+- log(x)
+
+### 🧠 Smart Features
+- 📜 History tracking
+- 🧹 Clear history
+- ↩️ Undo last operation
+- 💾 Memory store & recall
+- 🔁 Repeat last operation

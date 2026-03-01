@@ -4,29 +4,44 @@ A beginner-friendly Python mini project.
 
 ## 🚀 Features
 
-* 🎮 **Multiple Difficulty Levels**
-  Choose between Easy (1–10, 5 attempts), Medium (1–50, 7 attempts), and Hard (1–100, 10 attempts), making the game suitable for all skill levels.
+🎨 Graphical User Interface (GUI)
+The game is upgraded from command-line to a window-based application using Tkinter, providing a more interactive and user-friendly experience.
 
-* 🧠 **Smart Hints System**
-  The game provides feedback after each guess:
+🖱 Button-Based Interaction
+Users can play the game using buttons instead of typing commands, making it easier and more intuitive.
 
-  * 📉 Too Low — the guessed number is smaller than the target
-  * 📈 Too High — the guessed number is greater than the target
+🧾 Input Field for Guessing
+A text input box allows users to enter their guesses directly within the application window.
 
-* 🏆 **Score System**
-  Score is calculated based on remaining attempts. Fewer guesses result in a higher score.
+💬 Live Feedback Messages
+The game instantly displays responses such as:
 
-* 🥇 **Best Score Tracking**
-  Tracks and displays the highest score achieved during the session.
+📉 Too Low
 
-* 🔁 **Replay Option**
-  Allows the player to restart the game without exiting the program.
+📈 Too High
 
-* ⚠ **Input Validation**
-  Handles invalid inputs (like text instead of numbers) without crashing the game.
+✅ Correct
 
-* 🎯 **Core Gameplay Logic**
-  A random number is generated, and the player must guess it within a limited number of attempts to win.
+❌ Game Over
+
+🔄 Restart Game Option
+A restart button allows users to quickly start a new game without closing the application.
+
+🏆 Score Display System
+Displays the current game score based on remaining attempts.
+
+🥇 Persistent Best Score
+The best score is saved in a file and displayed in the GUI, even after restarting the application.
+
+🎯 Attempts Tracking
+Shows the number of attempts left in real time during gameplay.
+
+🧱 Object-Oriented Design
+The game is structured using classes, improving code organization and scalability.
+
+⚡ Event-Driven Programming
+Game actions are triggered by user interactions such as button clicks, similar to real-world applications.
+
 
 ## How to Run
 python main.py

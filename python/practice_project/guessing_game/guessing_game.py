@@ -1,5 +1,5 @@
 # ==================================
-# Advanced Number Guessing Game - Day 2
+# Advanced Number Guessing Game 
 # ==================================
 
 import random

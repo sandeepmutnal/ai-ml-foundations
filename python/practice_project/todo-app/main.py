@@ -1,5 +1,6 @@
 import json
 import os
+import csv
 from datetime import datetime
 
 BASE_DIR = os.path.dirname(__file__)
@@ -11,6 +12,7 @@ TASKS_FILE = os.path.join(BASE_DIR, "tasks.json")
 # -------------------------------
 
 def load_tasks():
+
     if not os.path.exists(TASKS_FILE):
         with open(TASKS_FILE, "w") as f:
             json.dump([], f)
@@ -19,11 +21,12 @@ def load_tasks():
     with open(TASKS_FILE, "r") as f:
         try:
             return json.load(f)
-        except json.JSONDecodeError:
+        except:
             return []
 
 
 def save_tasks(tasks):
+
     with open(TASKS_FILE, "w") as f:
         json.dump(tasks, f, indent=4)
 
@@ -43,10 +46,12 @@ def view_tasks(tasks):
     for i, task in enumerate(tasks, 1):
 
         status = "✅" if task["done"] else "❌"
-        priority = task["priority"]
-        created = task["created"]
 
-        print(f"{i}. {status} [{priority}] {task['title']} (Created: {created})")
+        print(
+            f"{i}. {status} [{task['priority']}] "
+            f"{task['title']} | Category: {task['category']} "
+            f"| Due: {task['due']} | Created: {task['created']}"
+        )
 
     print("================================\n")
 
@@ -60,7 +65,7 @@ def add_task(tasks):
     title = input("Enter task title: ").strip()
 
     if not title:
-        print("Task title cannot be empty.")
+        print("Task title cannot be empty")
         return
 
     priority = input("Priority (Low/Medium/High): ").capitalize()
@@ -68,10 +73,22 @@ def add_task(tasks):
     if priority not in ["Low", "Medium", "High"]:
         priority = "Medium"
 
+    category = input("Category (Work/Study/Personal): ").capitalize()
+
+    if category not in ["Work", "Study", "Personal"]:
+        category = "Personal"
+
+    due = input("Due date (YYYY-MM-DD) or press Enter: ")
+
+    if due == "":
+        due = "No deadline"
+
     task = {
         "title": title,
         "done": False,
         "priority": priority,
+        "category": category,
+        "due": due,
         "created": datetime.now().strftime("%Y-%m-%d %H:%M")
     }
 
@@ -101,12 +118,12 @@ def mark_done(tasks):
             tasks[num - 1]["done"] = True
             save_tasks(tasks)
 
-            print("Task marked as completed!")
+            print("Task completed!")
 
         else:
-            print("Invalid task number")
+            print("Invalid number")
 
-    except ValueError:
+    except:
         print("Enter valid number")
 
 
@@ -134,9 +151,9 @@ def delete_task(tasks):
             print(f"Deleted: {removed['title']}")
 
         else:
-            print("Invalid task number")
+            print("Invalid number")
 
-    except ValueError:
+    except:
         print("Enter valid number")
 
 
@@ -157,52 +174,53 @@ def edit_task(tasks):
 
         if 1 <= num <= len(tasks):
 
-            new_title = input("Enter new title: ").strip()
+            new_title = input("New title: ").strip()
 
             if new_title:
-
                 tasks[num - 1]["title"] = new_title
 
-                save_tasks(tasks)
+            new_priority = input("New priority (Low/Medium/High): ").capitalize()
 
-                print("Task updated!")
+            if new_priority in ["Low", "Medium", "High"]:
+                tasks[num - 1]["priority"] = new_priority
 
-            else:
-                print("Title cannot be empty")
+            save_tasks(tasks)
+
+            print("Task updated!")
 
         else:
             print("Invalid number")
 
-    except ValueError:
+    except:
         print("Enter valid number")
 
 
 # -------------------------------
-# Search Task
+# Search Tasks
 # -------------------------------
 
 def search_tasks(tasks):
 
-    keyword = input("Enter keyword to search: ").lower()
+    keyword = input("Enter keyword: ").lower()
 
     results = [t for t in tasks if keyword in t["title"].lower()]
 
     if not results:
-        print("No matching tasks found.")
+        print("No matching tasks")
         return
 
     view_tasks(results)
 
 
 # -------------------------------
-# Sort Tasks by Priority
+# Sort Tasks
 # -------------------------------
 
 def sort_by_priority(tasks):
 
-    priority_order = {"High": 1, "Medium": 2, "Low": 3}
+    order = {"High": 1, "Medium": 2, "Low": 3}
 
-    tasks.sort(key=lambda x: priority_order.get(x["priority"], 2))
+    tasks.sort(key=lambda x: order.get(x["priority"], 2))
 
     save_tasks(tasks)
 
@@ -230,7 +248,54 @@ def clear_completed(tasks):
 
     save_tasks(tasks)
 
-    print("Completed tasks removed!")
+    print("Completed tasks removed")
+
+
+# -------------------------------
+# Statistics
+# -------------------------------
+
+def show_stats(tasks):
+
+    total = len(tasks)
+    completed = len([t for t in tasks if t["done"]])
+    pending = total - completed
+
+    print("\n======= STATS =======")
+    print("Total tasks:", total)
+    print("Completed:", completed)
+    print("Pending:", pending)
+    print("=====================\n")
+
+
+# -------------------------------
+# Export CSV
+# -------------------------------
+
+def export_csv(tasks):
+
+    filename = "tasks_export.csv"
+
+    with open(filename, "w", newline="") as f:
+
+        writer = csv.writer(f)
+
+        writer.writerow(
+            ["Title", "Priority", "Category", "Due", "Status", "Created"]
+        )
+
+        for t in tasks:
+
+            writer.writerow([
+                t["title"],
+                t["priority"],
+                t["category"],
+                t["due"],
+                "Done" if t["done"] else "Pending",
+                t["created"]
+            ])
+
+    print("Tasks exported to tasks_export.csv")
 
 
 # -------------------------------
@@ -239,7 +304,7 @@ def clear_completed(tasks):
 
 def menu():
 
-    print("\n=========== TO-DO APP ===========")
+    print("\n=========== TO-DO APP PRO ===========")
     print("1. View Tasks")
     print("2. Add Task")
     print("3. Mark Task Done")
@@ -248,13 +313,15 @@ def menu():
     print("6. Search Tasks")
     print("7. Sort by Priority")
     print("8. Show Pending Tasks")
-    print("9. Clear Completed Tasks")
-    print("10. Exit")
-    print("=================================")
+    print("9. Clear Completed")
+    print("10. Show Statistics")
+    print("11. Export CSV")
+    print("12. Exit")
+    print("=====================================")
 
 
 # -------------------------------
-# Main Loop
+# Main
 # -------------------------------
 
 def main():
@@ -265,7 +332,7 @@ def main():
 
         menu()
 
-        choice = input("Choose option (1-10): ")
+        choice = input("Choose option (1-12): ")
 
         if choice == "1":
             view_tasks(tasks)
@@ -295,6 +362,12 @@ def main():
             clear_completed(tasks)
 
         elif choice == "10":
+            show_stats(tasks)
+
+        elif choice == "11":
+            export_csv(tasks)
+
+        elif choice == "12":
             print("Goodbye 👋")
             break
 

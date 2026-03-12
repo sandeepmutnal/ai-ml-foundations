@@ -1,29 +1,23 @@
 import math
 import random
 
-# ---------- GLOBAL VARIABLES ----------
+# ---------------- GLOBAL VARIABLES ----------------
 history = []
 last_result = None
 memory = None
 last_operation = None
 
-# ---------- BASIC OPERATIONS ----------
-def add(a, b):
-    return a + b
-
-def subtract(a, b):
-    return a - b
-
-def multiply(a, b):
-    return a * b
+# ---------------- BASIC OPERATIONS ----------------
+def add(a, b): return a + b
+def subtract(a, b): return a - b
+def multiply(a, b): return a * b
 
 def divide(a, b):
     if b == 0:
         return "❌ Cannot divide by zero"
     return a / b
 
-def power(a, b):
-    return a ** b
+def power(a, b): return a ** b
 
 def square_root(a):
     if a < 0:
@@ -33,18 +27,12 @@ def square_root(a):
 def percentage(a, b):
     return (a / 100) * b
 
-def minimum(a, b):
-    return min(a, b)
+def minimum(a, b): return min(a, b)
+def maximum(a, b): return max(a, b)
 
-def maximum(a, b):
-    return max(a, b)
-
-# ---------- SCIENTIFIC ----------
-def sin(x):
-    return math.sin(math.radians(x))
-
-def cos(x):
-    return math.cos(math.radians(x))
+# ---------------- SCIENTIFIC ----------------
+def sin(x): return math.sin(math.radians(x))
+def cos(x): return math.cos(math.radians(x))
 
 def log(x):
     if x <= 0:
@@ -56,7 +44,7 @@ def factorial(x):
         return "❌ Negative number not allowed"
     return math.factorial(int(x))
 
-# ---------- EXTRA FEATURES ----------
+# ---------------- EXTRA FEATURES ----------------
 def random_number(a, b):
     return random.randint(int(a), int(b))
 
@@ -64,22 +52,56 @@ def average(nums):
     return sum(nums) / len(nums)
 
 def even_odd(n):
-    if int(n) % 2 == 0:
-        return "Even"
-    else:
-        return "Odd"
+    return "Even" if int(n) % 2 == 0 else "Odd"
 
-# ---------- HISTORY ----------
+# ---------------- PRIME CHECK ----------------
+def prime_check(n):
+
+    n = int(n)
+
+    if n <= 1:
+        return "Not Prime"
+
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return "Not Prime"
+
+    return "Prime"
+
+# ---------------- TEMPERATURE ----------------
+def c_to_f(c):
+    return (c * 9/5) + 32
+
+def f_to_c(f):
+    return (f - 32) * 5/9
+
+# ---------------- NUMBER GUESS GAME ----------------
+def guess_game():
+
+    number = random.randint(1, 10)
+
+    print("🎮 Guess the number (1-10)")
+
+    guess = int(input("Enter guess: "))
+
+    if guess == number:
+        print("🎉 Correct!")
+    else:
+        print("❌ Wrong. Number was:", number)
+
+# ---------------- HISTORY ----------------
 def add_to_history(record):
     history.append(record)
 
 def show_history():
+
     if not history:
-        print("📭 No history yet")
+        print("📭 No history")
         return
 
-    print("\n📜 CALCULATION HISTORY")
+    print("\n📜 HISTORY")
     print("-"*35)
+
     for item in history:
         print(item)
 
@@ -87,76 +109,75 @@ def clear_history():
     history.clear()
     print("🧹 History cleared")
 
-def undo_last():
-    if history:
-        removed = history.pop()
-        print("↩️ Removed:", removed)
-    else:
-        print("❌ Nothing to undo")
-
-# ---------- FILE FUNCTIONS ----------
+# ---------------- FILE SAVE ----------------
 def save_history():
+
     with open("calculator_history.txt", "w") as f:
         for item in history:
             f.write(item + "\n")
 
-    print("💾 History saved to file")
+    print("💾 History saved")
 
 def load_history():
+
     try:
-        with open("calculator_history.txt", "r") as f:
+        with open("calculator_history.txt") as f:
             for line in f:
                 history.append(line.strip())
 
         print("📂 History loaded")
 
     except:
-        print("❌ No history file found")
+        print("❌ No file found")
 
-# ---------- MENU ----------
+# ---------------- MENU ----------------
 def menu():
 
     print("\n" + "="*50)
-    print("🧮 ADVANCED PYTHON CALCULATOR v5")
+    print("🧮 ADVANCED PYTHON CALCULATOR v6")
     print("="*50)
 
-    print("1  ➜ Add")
-    print("2  ➜ Subtract")
-    print("3  ➜ Multiply")
-    print("4  ➜ Divide")
-    print("5  ➜ Power")
+    print("1  Add")
+    print("2  Subtract")
+    print("3  Multiply")
+    print("4  Divide")
+    print("5  Power")
 
-    print("6  ➜ Square Root")
-    print("7  ➜ Percentage")
+    print("6  Square Root")
+    print("7  Percentage")
 
-    print("8  ➜ sin(x)")
-    print("9  ➜ cos(x)")
-    print("10 ➜ log(x)")
+    print("8  sin(x)")
+    print("9  cos(x)")
+    print("10 log(x)")
 
-    print("11 ➜ Minimum")
-    print("12 ➜ Maximum")
+    print("11 Minimum")
+    print("12 Maximum")
 
-    print("13 ➜ Show History")
-    print("14 ➜ Clear History")
-    print("15 ➜ Undo Last")
+    print("13 Show History")
+    print("14 Clear History")
 
-    print("16 ➜ Store in Memory")
-    print("17 ➜ Recall Memory")
+    print("15 Store Memory")
+    print("16 Recall Memory")
 
-    print("18 ➜ Repeat Last Result")
+    print("17 Factorial")
+    print("18 Random Number")
 
-    print("19 ➜ Factorial")
-    print("20 ➜ Random Number")
+    print("19 Average")
+    print("20 Even / Odd")
 
-    print("21 ➜ Average")
-    print("22 ➜ Even / Odd Check")
+    print("21 Prime Check")
 
-    print("23 ➜ Save History")
-    print("24 ➜ Load History")
+    print("22 Celsius → Fahrenheit")
+    print("23 Fahrenheit → Celsius")
 
-    print("25 ➜ Exit")
+    print("24 Number Guess Game")
 
-# ---------- INPUT ----------
+    print("25 Save History")
+    print("26 Load History")
+
+    print("27 Exit")
+
+# ---------------- INPUT ----------------
 def get_number(prompt):
 
     while True:
@@ -165,19 +186,19 @@ def get_number(prompt):
         except:
             print("❌ Invalid number")
 
-# ---------- MAIN PROGRAM ----------
+# ---------------- MAIN LOOP ----------------
 while True:
 
     menu()
 
-    choice = input("Enter your choice: ")
+    choice = input("Enter choice: ")
 
-# ---------- EXIT ----------
-    if choice == "25":
-        print("👋 Thank you for using calculator")
+# ---------------- EXIT ----------------
+    if choice == "27":
+        print("👋 Goodbye")
         break
 
-# ---------- HISTORY ----------
+# ---------------- HISTORY ----------------
     elif choice == "13":
         show_history()
         continue
@@ -186,45 +207,43 @@ while True:
         clear_history()
         continue
 
+# ---------------- MEMORY ----------------
     elif choice == "15":
-        undo_last()
-        continue
 
-# ---------- MEMORY ----------
-    elif choice == "16":
         if last_result is not None:
             memory = last_result
             print("💾 Stored:", memory)
+
         else:
-            print("❌ No result available")
+            print("❌ No result")
+
         continue
 
-    elif choice == "17":
+    elif choice == "16":
+
         if memory is not None:
-            print("📌 Memory value:", memory)
+            print("📌 Memory:", memory)
         else:
             print("❌ Memory empty")
+
         continue
 
-# ---------- REPEAT ----------
-    elif choice == "18":
-        if last_result is not None:
-            print("🔁 Last Result:", last_result)
-        else:
-            print("❌ No previous result")
-        continue
-
-# ---------- FILE ----------
-    elif choice == "23":
+# ---------------- FILE ----------------
+    elif choice == "25":
         save_history()
         continue
 
-    elif choice == "24":
+    elif choice == "26":
         load_history()
         continue
 
-# ---------- SINGLE NUMBER ----------
-    elif choice in ["6","8","9","10","19","22"]:
+# ---------------- GAME ----------------
+    elif choice == "24":
+        guess_game()
+        continue
+
+# ---------------- SINGLE INPUT ----------------
+    elif choice in ["6","8","9","10","17","20","21","22","23"]:
 
         num = get_number("Enter number: ")
 
@@ -244,68 +263,80 @@ while True:
             result = log(num)
             exp = f"log({num})"
 
-        elif choice == "19":
+        elif choice == "17":
             result = factorial(num)
             exp = f"{num}!"
 
-        elif choice == "22":
+        elif choice == "20":
             result = even_odd(num)
             exp = f"{num}"
+
+        elif choice == "21":
+            result = prime_check(num)
+            exp = f"{num}"
+
+        elif choice == "22":
+            result = c_to_f(num)
+            exp = f"{num}C"
+
+        elif choice == "23":
+            result = f_to_c(num)
+            exp = f"{num}F"
 
         print("Result:", result)
 
         add_to_history(f"{exp} = {result}")
         last_result = result
 
-# ---------- TWO NUMBERS ----------
-    elif choice in ["1","2","3","4","5","7","11","12","20"]:
+# ---------------- TWO INPUT ----------------
+    elif choice in ["1","2","3","4","5","7","11","12","18"]:
 
-        num1 = get_number("Enter first number: ")
-        num2 = get_number("Enter second number: ")
+        a = get_number("Enter first number: ")
+        b = get_number("Enter second number: ")
 
         if choice == "1":
-            result = add(num1, num2)
+            result = add(a,b)
             op = "+"
 
         elif choice == "2":
-            result = subtract(num1, num2)
+            result = subtract(a,b)
             op = "-"
 
         elif choice == "3":
-            result = multiply(num1, num2)
+            result = multiply(a,b)
             op = "*"
 
         elif choice == "4":
-            result = divide(num1, num2)
+            result = divide(a,b)
             op = "/"
 
         elif choice == "5":
-            result = power(num1, num2)
+            result = power(a,b)
             op = "^"
 
         elif choice == "7":
-            result = percentage(num1, num2)
+            result = percentage(a,b)
             op = "% of"
 
         elif choice == "11":
-            result = minimum(num1, num2)
+            result = minimum(a,b)
             op = "min"
 
         elif choice == "12":
-            result = maximum(num1, num2)
+            result = maximum(a,b)
             op = "max"
 
-        elif choice == "20":
-            result = random_number(num1, num2)
+        elif choice == "18":
+            result = random_number(a,b)
             op = "random"
 
         print("Result:", result)
 
-        add_to_history(f"{num1} {op} {num2} = {result}")
+        add_to_history(f"{a} {op} {b} = {result}")
         last_result = result
 
-# ---------- AVERAGE ----------
-    elif choice == "21":
+# ---------------- AVERAGE ----------------
+    elif choice == "19":
 
         count = int(get_number("How many numbers: "))
 

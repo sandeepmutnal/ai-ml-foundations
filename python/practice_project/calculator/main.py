@@ -42,7 +42,6 @@ def even_odd(n):
     return "Even" if int(n) % 2 == 0 else "Odd"
 
 def prime_check(n):
-
     n = int(n)
 
     if n <= 1:
@@ -58,12 +57,18 @@ def prime_check(n):
 def random_number(a, b):
     return random.randint(int(a), int(b))
 
-# ---------------- AVERAGE ----------------
+# ---------------- STATISTICS ----------------
 def average(nums):
     return sum(nums) / len(nums)
 
 def total(nums):
     return sum(nums)
+
+def maximum(nums):
+    return max(nums)
+
+def minimum(nums):
+    return min(nums)
 
 # ---------------- LCM & GCD ----------------
 def gcd(a, b):
@@ -72,7 +77,7 @@ def gcd(a, b):
 def lcm(a, b):
     return abs(int(a*b)) // math.gcd(int(a), int(b))
 
-# ---------------- AREA ----------------
+# ---------------- GEOMETRY ----------------
 def circle_area(r):
     return math.pi * r * r
 
@@ -86,6 +91,50 @@ def c_to_f(c):
 def f_to_c(f):
     return (f - 32) * 5/9
 
+# ---------------- UNIT CONVERSION ----------------
+def km_to_m(km):
+    return km * 1000
+
+def m_to_km(m):
+    return m / 1000
+
+def kg_to_g(kg):
+    return kg * 1000
+
+def g_to_kg(g):
+    return g / 1000
+
+# ---------------- MATRIX ADDITION ----------------
+def matrix_add():
+
+    print("Matrix size (2x2)")
+
+    m1 = []
+    m2 = []
+
+    print("Enter Matrix A")
+
+    for i in range(2):
+        row = list(map(float, input().split()))
+        m1.append(row)
+
+    print("Enter Matrix B")
+
+    for i in range(2):
+        row = list(map(float, input().split()))
+        m2.append(row)
+
+    result = [[0,0],[0,0]]
+
+    for i in range(2):
+        for j in range(2):
+            result[i][j] = m1[i][j] + m2[i][j]
+
+    print("Result Matrix:")
+
+    for r in result:
+        print(r)
+
 # ---------------- HISTORY ----------------
 def add_history(text):
     history.append(text)
@@ -93,14 +142,14 @@ def add_history(text):
 def show_history():
 
     if not history:
-        print("📭 No history yet")
+        print("📭 No history")
         return
 
     print("\n📜 HISTORY")
     print("-"*35)
 
-    for item in history:
-        print(item)
+    for h in history:
+        print(h)
 
 def clear_history():
     history.clear()
@@ -111,7 +160,7 @@ def save_history():
 
     with open("history.txt","w") as f:
         for h in history:
-            f.write(h + "\n")
+            f.write(h+"\n")
 
     print("💾 History saved")
 
@@ -125,13 +174,13 @@ def load_history():
         print("📂 History loaded")
 
     except:
-        print("❌ No saved file")
+        print("❌ No file found")
 
 # ---------------- MENU ----------------
 def menu():
 
     print("\n"+"="*50)
-    print("🧮 ADVANCED PYTHON CALCULATOR v7")
+    print("🧮 ADVANCED PYTHON CALCULATOR v8")
     print("="*50)
 
     print("1  Add")
@@ -153,23 +202,33 @@ def menu():
 
     print("14 Average")
     print("15 Sum of Numbers")
+    print("16 Max Number")
+    print("17 Min Number")
 
-    print("16 GCD")
-    print("17 LCM")
+    print("18 GCD")
+    print("19 LCM")
 
-    print("18 Circle Area")
-    print("19 Triangle Area")
+    print("20 Circle Area")
+    print("21 Triangle Area")
 
-    print("20 Celsius → Fahrenheit")
-    print("21 Fahrenheit → Celsius")
+    print("22 Celsius → Fahrenheit")
+    print("23 Fahrenheit → Celsius")
 
-    print("22 Show History")
-    print("23 Clear History")
+    print("24 KM → Meter")
+    print("25 Meter → KM")
 
-    print("24 Save History")
-    print("25 Load History")
+    print("26 KG → Gram")
+    print("27 Gram → KG")
 
-    print("26 Exit")
+    print("28 Matrix Addition")
+
+    print("29 Show History")
+    print("30 Clear History")
+
+    print("31 Save History")
+    print("32 Load History")
+
+    print("33 Exit")
 
 # ---------------- INPUT ----------------
 def get_number(text):
@@ -188,125 +247,123 @@ while True:
     choice = input("Enter choice: ")
 
 # ---------------- EXIT ----------------
-    if choice == "26":
+    if choice == "33":
         print("👋 Goodbye")
         break
 
 # ---------------- HISTORY ----------------
-    elif choice == "22":
+    elif choice == "29":
         show_history()
         continue
 
-    elif choice == "23":
+    elif choice == "30":
         clear_history()
         continue
 
 # ---------------- FILE ----------------
-    elif choice == "24":
+    elif choice == "31":
         save_history()
         continue
 
-    elif choice == "25":
+    elif choice == "32":
         load_history()
         continue
 
+# ---------------- MATRIX ----------------
+    elif choice == "28":
+        matrix_add()
+        continue
+
 # ---------------- SINGLE INPUT ----------------
-    elif choice in ["6","7","8","9","10","11","12","18","20","21"]:
+    elif choice in ["6","7","8","9","10","11","12","20","22","23","24","25","26","27"]:
 
         n = get_number("Enter number: ")
 
         if choice == "6":
             result = square_root(n)
-            exp = f"√{n}"
 
         elif choice == "7":
             result = sin(n)
-            exp = f"sin({n})"
 
         elif choice == "8":
             result = cos(n)
-            exp = f"cos({n})"
 
         elif choice == "9":
             result = log(n)
-            exp = f"log({n})"
 
         elif choice == "10":
             result = factorial(n)
-            exp = f"{n}!"
 
         elif choice == "11":
             result = even_odd(n)
-            exp = f"{n}"
 
         elif choice == "12":
             result = prime_check(n)
-            exp = f"{n}"
-
-        elif choice == "18":
-            result = circle_area(n)
-            exp = f"Circle radius {n}"
 
         elif choice == "20":
-            result = c_to_f(n)
-            exp = f"{n}C"
+            result = circle_area(n)
 
-        elif choice == "21":
+        elif choice == "22":
+            result = c_to_f(n)
+
+        elif choice == "23":
             result = f_to_c(n)
-            exp = f"{n}F"
+
+        elif choice == "24":
+            result = km_to_m(n)
+
+        elif choice == "25":
+            result = m_to_km(n)
+
+        elif choice == "26":
+            result = kg_to_g(n)
+
+        elif choice == "27":
+            result = g_to_kg(n)
 
         print("Result:", result)
-        add_history(f"{exp} = {result}")
+        add_history(f"{n} -> {result}")
         last_result = result
 
 # ---------------- TWO INPUT ----------------
-    elif choice in ["1","2","3","4","5","13","16","17","19"]:
+    elif choice in ["1","2","3","4","5","13","18","19","21"]:
 
         a = get_number("Enter first number: ")
         b = get_number("Enter second number: ")
 
         if choice == "1":
             result = add(a,b)
-            op="+"
 
         elif choice == "2":
             result = subtract(a,b)
-            op="-"
 
         elif choice == "3":
             result = multiply(a,b)
-            op="*"
 
         elif choice == "4":
             result = divide(a,b)
-            op="/"
 
         elif choice == "5":
             result = power(a,b)
-            op="^"
 
         elif choice == "13":
             result = random_number(a,b)
-            op="random"
 
-        elif choice == "16":
+        elif choice == "18":
             result = gcd(a,b)
-            op="gcd"
-
-        elif choice == "17":
-            result = lcm(a,b)
-            op="lcm"
 
         elif choice == "19":
+            result = lcm(a,b)
+
+        elif choice == "21":
             result = triangle_area(a,b)
-            op="triangle area"
 
         print("Result:", result)
-        add_history(f"{a} {op} {b} = {result}")
+        add_history(f"{a},{b} -> {result}")
         last_result = result
 
-# ---------------- MULTI NUMBER ----------------
-    elif choice in ["14","15"]:
+# ---------------- MULTI NUMBERS ----------------
+    elif choice in ["14","15","16","17"]:
 
         count = int(get_number("How many numbers: "))
 
@@ -317,14 +374,18 @@ while True:
 
         if choice == "14":
             result = average(nums)
-            text="Average"
 
-        else:
+        elif choice == "15":
             result = total(nums)
-            text="Sum"
 
-        print(text+":", result)
-        add_history(f"{text} {nums} = {result}")
+        elif choice == "16":
+            result = maximum(nums)
+
+        elif choice == "17":
+            result = minimum(nums)
+
+        print("Result:", result)
+        add_history(f"{nums} -> {result}")
         last_result=result
 
     else:

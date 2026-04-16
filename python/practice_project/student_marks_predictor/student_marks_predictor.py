@@ -2,7 +2,7 @@
 # Student Marks Predictor
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 
 # 1️⃣ Dataset
@@ -16,30 +16,28 @@ data = {
 
 df = pd.DataFrame(data)
 
-print(df)
+print("Dataset:\n", df)
 
 
-# 2️⃣ Visualization 1: Study Hours vs Marks
+# 2️⃣ Features and Label
 
-plt.plot(df["Study_Hours"], df["Marks"], marker="o")
-
-plt.xlabel("Study Hours")
-plt.ylabel("Marks")
-plt.title("Study Hours vs Marks")
-
-plt.grid(True)
-
-plt.show()
+X = df[["Study_Hours", "Sleep_Hours", "Attendance"]]
+y = df["Marks"]
 
 
-# 3️⃣ Visualization 2: Attendance vs Marks
+# 3️⃣ Create Model
 
-plt.plot(df["Attendance"], df["Marks"], marker="o")
+model = LinearRegression()
 
-plt.xlabel("Attendance")
-plt.ylabel("Marks")
-plt.title("Attendance vs Marks")
 
-plt.grid(True)
+# 4️⃣ Train Model
 
-plt.show()
+model.fit(X, y)
+
+
+# 5️⃣ Predict Marks
+
+prediction = model.predict([[7, 6, 85]])
+
+print("\nPredicted Marks:")
+print(prediction)

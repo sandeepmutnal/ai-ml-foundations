@@ -3,6 +3,7 @@
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 
 
 # 1️⃣ Dataset
@@ -25,19 +26,47 @@ X = df[["Study_Hours", "Sleep_Hours", "Attendance"]]
 y = df["Marks"]
 
 
-# 3️⃣ Create Model
+# 3️⃣ Train/Test Split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42
+)
+
+
+print("\nTraining Data Size:", len(X_train))
+print("Testing Data Size:", len(X_test))
+
+
+# 4️⃣ Create Model
 
 model = LinearRegression()
 
 
-# 4️⃣ Train Model
+# 5️⃣ Train Model
 
-model.fit(X, y)
+model.fit(X_train, y_train)
 
 
-# 5️⃣ Predict Marks
+# 6️⃣ Predict Test Data
 
-prediction = model.predict([[7, 6, 85]])
+predictions = model.predict(X_test)
 
-print("\nPredicted Marks:")
-print(prediction)
+print("\nTest Predictions:")
+print(predictions)
+
+
+# 7️⃣ Accuracy Score
+
+accuracy = model.score(X_test, y_test)
+
+print("\nModel Accuracy (R² Score):", accuracy)
+
+
+# 8️⃣ Predict New Student Marks
+
+new_prediction = model.predict([[7, 6, 85]])
+
+print("\nPredicted Marks for New Student:")
+print(new_prediction)

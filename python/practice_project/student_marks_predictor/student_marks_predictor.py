@@ -1,5 +1,5 @@
 # Project 1
-# Student Marks Predictor
+# Student Marks Predictor (Interactive Version)
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -17,7 +17,7 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset:\n", df)
+print("Dataset Loaded Successfully ✅")
 
 
 # 2️⃣ Features and Label
@@ -29,44 +29,36 @@ y = df["Marks"]
 # 3️⃣ Train/Test Split
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
+    X,
+    y,
     test_size=0.2,
     random_state=42
 )
 
 
-print("\nTraining Data Size:", len(X_train))
-print("Testing Data Size:", len(X_test))
-
-
-# 4️⃣ Create Model
+# 4️⃣ Train Model
 
 model = LinearRegression()
-
-
-# 5️⃣ Train Model
-
 model.fit(X_train, y_train)
 
 
-# 6️⃣ Predict Test Data
-
-predictions = model.predict(X_test)
-
-print("\nTest Predictions:")
-print(predictions)
-
-
-# 7️⃣ Accuracy Score
+# 5️⃣ Accuracy Score
 
 accuracy = model.score(X_test, y_test)
+print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
 
-print("\nModel Accuracy (R² Score):", accuracy)
+
+# 6️⃣ Take User Input
+
+print("\nEnter Student Details:")
+
+study_hours = float(input("Enter Study Hours: "))
+sleep_hours = float(input("Enter Sleep Hours: "))
+attendance = float(input("Enter Attendance (%): "))
 
 
-# 8️⃣ Predict New Student Marks
+# 7️⃣ Predict Marks
 
-new_prediction = model.predict([[7, 6, 85]])
+prediction = model.predict([[study_hours, sleep_hours, attendance]])
 
-print("\nPredicted Marks for New Student:")
-print(new_prediction)
+print("\n🎯 Predicted Marks:", round(prediction[0], 2))

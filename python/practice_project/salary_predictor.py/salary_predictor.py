@@ -2,6 +2,7 @@
 # Salary Predictor AI Model
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 # Dataset
@@ -11,9 +12,19 @@ data = {
     "Salary": [2,3,4,5,6.5,7.5,8.5,9.5,10.5,12]
 }
 
-
 df = pd.DataFrame(data)
 
 
 print("Salary Dataset Loaded Successfully ✅\n")
 print(df)
+
+
+# Visualization
+
+plt.scatter(df["Experience"], df["Salary"])
+
+plt.title("Experience vs Salary Graph")
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary (LPA)")
+
+plt.show()

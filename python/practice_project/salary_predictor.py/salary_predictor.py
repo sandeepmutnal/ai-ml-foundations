@@ -4,6 +4,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 
 
 # Dataset
@@ -25,6 +26,20 @@ X = df[["Experience"]]
 y = df["Salary"]
 
 
+# Train/Test Split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+
+print("\nTraining Data Size:", len(X_train))
+print("Testing Data Size:", len(X_test))
+
+
 # Create Model
 
 model = LinearRegression()
@@ -32,12 +47,27 @@ model = LinearRegression()
 
 # Train Model
 
-model.fit(X, y)
+model.fit(X_train, y_train)
 
 
-# Predict Salary
+# Predict Test Data
 
-prediction = model.predict([[5]])
+predictions = model.predict(X_test)
+
+print("\nTest Predictions:")
+print(predictions)
+
+
+# Accuracy Score
+
+accuracy = model.score(X_test, y_test)
+
+print("\nModel Accuracy (R² Score):", round(accuracy, 2))
+
+
+# Predict New Salary
+
+new_prediction = model.predict([[5]])
 
 print("\nPredicted Salary for 5 Years Experience:")
-print(round(prediction[0], 2), "LPA")
+print(round(new_prediction[0], 2), "LPA")

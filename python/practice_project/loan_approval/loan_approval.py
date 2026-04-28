@@ -2,7 +2,7 @@
 # Loan Approval Predictor
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
 
 
 # Dataset
@@ -20,23 +20,25 @@ print("Dataset Loaded Successfully ✅\n")
 print(df)
 
 
-# 🎯 Visualization 1: Income vs Approval
+# Features and Label
 
-plt.scatter(df["Income"], df["Approved"])
-
-plt.xlabel("Income")
-plt.ylabel("Loan Approval (0 = No, 1 = Yes)")
-plt.title("Income vs Loan Approval")
-
-plt.show()
+X = df[["Income", "Credit_Score", "Loan_Amount"]]
+y = df["Approved"]
 
 
-# 🎯 Visualization 2: Credit Score vs Approval
+# Create Model
 
-plt.scatter(df["Credit_Score"], df["Approved"])
+model = LogisticRegression()
 
-plt.xlabel("Credit Score")
-plt.ylabel("Loan Approval (0 = No, 1 = Yes)")
-plt.title("Credit Score vs Loan Approval")
 
-plt.show()
+# Train Model
+
+model.fit(X, y)
+
+
+# Predict Loan Approval
+
+prediction = model.predict([[50000, 720, 200000]])
+
+print("\nLoan Prediction (1 = Approved, 0 = Rejected):")
+print(prediction)

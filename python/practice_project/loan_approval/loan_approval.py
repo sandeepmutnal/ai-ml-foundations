@@ -1,9 +1,10 @@
 # Project 3
-# Loan Approval Predictor (Interactive Version)
+# Loan Approval GUI App
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+import tkinter as tk
 
 
 # Dataset
@@ -17,10 +18,8 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
 
-
-# Features and Label
+# Features & Labels
 
 X = df[["Income", "Credit_Score", "Loan_Amount"]]
 y = df["Approved"]
@@ -42,29 +41,62 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 
 
-# Accuracy
+# Prediction Function
 
-accuracy = model.score(X_test, y_test)
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
+def predict_loan():
+    try:
+        income = float(entry_income.get())
+        credit = float(entry_credit.get())
+        loan = float(entry_loan.get())
+
+        prediction = model.predict([[income, credit, loan]])
+
+        if prediction[0] == 1:
+            result_label.config(text="Loan Approved ✅")
+        else:
+            result_label.config(text="Loan Rejected ❌")
+
+    except:
+        result_label.config(text="Enter valid numbers")
 
 
-# User Input
+# GUI Window
 
-print("\nEnter Customer Details:")
-
-income = float(input("Enter Income: "))
-credit = float(input("Enter Credit Score: "))
-loan = float(input("Enter Loan Amount: "))
+window = tk.Tk()
+window.title("Loan Approval AI App")
+window.geometry("350x300")
 
 
-# Prediction
+# Inputs
 
-prediction = model.predict([[income, credit, loan]])
+tk.Label(window, text="Income").pack()
+entry_income = tk.Entry(window)
+entry_income.pack()
+
+tk.Label(window, text="Credit Score").pack()
+entry_credit = tk.Entry(window)
+entry_credit.pack()
+
+tk.Label(window, text="Loan Amount").pack()
+entry_loan = tk.Entry(window)
+entry_loan.pack()
 
 
-# Output Result
+# Button
 
-if prediction[0] == 1:
-    print("\n🎯 Loan Approved ✅")
-else:
-    print("\n❌ Loan Rejected")
+tk.Button(
+    window,
+    text="Check Loan Approval",
+    command=predict_loan
+).pack(pady=10)
+
+
+# Result
+
+result_label = tk.Label(window, text="")
+result_label.pack()
+
+
+# Run App
+
+window.mainloop()

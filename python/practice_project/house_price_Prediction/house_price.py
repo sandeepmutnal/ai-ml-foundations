@@ -1,5 +1,5 @@
 # Project 4
-# House Price Predictor
+# House Price Predictor (Interactive Version)
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -17,9 +17,6 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
-print(df)
-
 
 # Features and Label
 
@@ -36,34 +33,31 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-print("\nTraining Data:", len(X_train))
-print("Testing Data:", len(X_test))
 
-
-# Model
+# Train Model
 
 model = LinearRegression()
 model.fit(X_train, y_train)
 
 
-# Predictions
-
-y_pred = model.predict(X_test)
-
-print("\nTest Predictions:")
-print(y_pred)
-
-
-# Accuracy (R² Score)
+# Accuracy
 
 accuracy = model.score(X_test, y_test)
+print("Model Accuracy:", round(accuracy * 100, 2), "%")
 
-print("\nModel Accuracy (R²):", round(accuracy, 2))
+
+# User Input
+
+print("\nEnter House Details:")
+
+area = float(input("Enter Area (sq.ft): "))
+bedrooms = float(input("Enter Number of Bedrooms: "))
+location = float(input("Enter Location Score (1-10): "))
 
 
-# Predict New House
+# Prediction
 
-new_prediction = model.predict([[2000, 3, 7]])
+prediction = model.predict([[area, bedrooms, location]])
 
-print("\nPredicted Price for Sample House:")
-print(round(new_prediction[0], 2), "Lakhs")
+
+print("\n🎯 Predicted House Price:", round(prediction[0], 2), "Lakhs")

@@ -2,6 +2,7 @@
 # Customer Churn Prediction
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 # Dataset
@@ -13,8 +14,40 @@ data = {
     "Churn": [1, 0, 1, 0, 0, 1, 0, 0]
 }
 
-
 df = pd.DataFrame(data)
 
-print("Customer Churn Dataset Loaded Successfully ✅\n")
+print("Dataset Loaded Successfully ✅\n")
 print(df)
+
+
+# 📊 Visualization 1: Monthly Bill vs Churn
+
+plt.scatter(df["Monthly_Bill"], df["Churn"])
+
+plt.xlabel("Monthly Bill")
+plt.ylabel("Churn (0 = Stay, 1 = Leave)")
+plt.title("Monthly Bill vs Customer Churn")
+
+plt.show()
+
+
+# 📊 Visualization 2: Support Calls vs Churn
+
+plt.scatter(df["Support_Calls"], df["Churn"])
+
+plt.xlabel("Support Calls")
+plt.ylabel("Churn (0 = Stay, 1 = Leave)")
+plt.title("Support Calls vs Customer Churn")
+
+plt.show()
+
+
+# 📊 Visualization 3: Tenure vs Churn
+
+plt.scatter(df["Tenure"], df["Churn"])
+
+plt.xlabel("Customer Tenure")
+plt.ylabel("Churn (0 = Stay, 1 = Leave)")
+plt.title("Tenure vs Customer Churn")
+
+plt.show()

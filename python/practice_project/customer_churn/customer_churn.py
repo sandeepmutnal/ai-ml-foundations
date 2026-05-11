@@ -3,6 +3,8 @@
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 # Dataset
@@ -26,27 +28,49 @@ X = df[["Monthly_Bill", "Tenure", "Support_Calls"]]
 y = df["Churn"]
 
 
-# Create Model
+# Train/Test Split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+print("\nTraining Data:", len(X_train))
+print("Testing Data:", len(X_test))
+
+
+# Model
 
 model = LogisticRegression()
+model.fit(X_train, y_train)
 
 
-# Train Model
+# Predictions
 
-model.fit(X, y)
+y_pred = model.predict(X_test)
 
-
-# Predict Customer Churn
-
-prediction = model.predict([[800, 3, 5]])
-
-print("\nPrediction Result:")
-print(prediction)
+print("\nPredictions:")
+print(y_pred)
 
 
-# Final Output
+# Accuracy
 
-if prediction[0] == 1:
-    print("⚠️ Customer May Leave")
-else:
-    print("✅ Customer Will Stay")
+accuracy = model.score(X_test, y_test)
+
+print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+
+
+# Confusion Matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+print(cm)
+
+
+# Classification Report
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))

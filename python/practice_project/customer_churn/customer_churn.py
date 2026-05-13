@@ -1,9 +1,10 @@
 # Project 5
-# Customer Churn Prediction (Interactive Version)
+# Customer Churn Prediction GUI App
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+import tkinter as tk
 
 
 # Dataset
@@ -16,8 +17,6 @@ data = {
 }
 
 df = pd.DataFrame(data)
-
-print("Dataset Loaded Successfully ✅\n")
 
 
 # Features and Label
@@ -42,30 +41,62 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 
 
-# Accuracy
+# Prediction Function
 
-accuracy = model.score(X_test, y_test)
+def predict_churn():
+    try:
+        bill = float(entry_bill.get())
+        tenure = float(entry_tenure.get())
+        calls = float(entry_calls.get())
 
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
+        prediction = model.predict([[bill, tenure, calls]])
 
+        if prediction[0] == 1:
+            result_label.config(text="⚠️ Customer May Leave")
+        else:
+            result_label.config(text="✅ Customer Will Stay")
 
-# User Input
-
-print("\nEnter Customer Details:")
-
-bill = float(input("Enter Monthly Bill: "))
-tenure = float(input("Enter Customer Tenure: "))
-calls = float(input("Enter Support Calls: "))
-
-
-# Prediction
-
-prediction = model.predict([[bill, tenure, calls]])
+    except:
+        result_label.config(text="Please enter valid numbers")
 
 
-# Final Result
+# GUI Window
 
-if prediction[0] == 1:
-    print("\n⚠️ Customer May Leave")
-else:
-    print("\n✅ Customer Will Stay")
+window = tk.Tk()
+window.title("Customer Churn Prediction AI App")
+window.geometry("400x320")
+
+
+# Inputs
+
+tk.Label(window, text="Monthly Bill").pack()
+entry_bill = tk.Entry(window)
+entry_bill.pack()
+
+tk.Label(window, text="Customer Tenure").pack()
+entry_tenure = tk.Entry(window)
+entry_tenure.pack()
+
+tk.Label(window, text="Support Calls").pack()
+entry_calls = tk.Entry(window)
+entry_calls.pack()
+
+
+# Button
+
+tk.Button(
+    window,
+    text="Predict Customer Churn",
+    command=predict_churn
+).pack(pady=10)
+
+
+# Result Label
+
+result_label = tk.Label(window, text="")
+result_label.pack()
+
+
+# Run App
+
+window.mainloop()

@@ -2,7 +2,7 @@
 # Disease Prediction System
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
 
 
 # Dataset
@@ -21,45 +21,25 @@ print("Disease Dataset Loaded Successfully ✅\n")
 print(df)
 
 
-# 📊 Visualization 1: Fever vs Disease
+# Features and Label
 
-plt.scatter(df["Fever"], df["Disease"])
-
-plt.xlabel("Fever (0 = No, 1 = Yes)")
-plt.ylabel("Disease")
-plt.title("Fever vs Disease")
-
-plt.show()
+X = df[["Fever", "Cough", "Headache", "Fatigue"]]
+y = df["Disease"]
 
 
-# 📊 Visualization 2: Cough vs Disease
+# Create Model
 
-plt.scatter(df["Cough"], df["Disease"])
-
-plt.xlabel("Cough (0 = No, 1 = Yes)")
-plt.ylabel("Disease")
-plt.title("Cough vs Disease")
-
-plt.show()
+model = DecisionTreeClassifier()
 
 
-# 📊 Visualization 3: Headache vs Disease
+# Train Model
 
-plt.scatter(df["Headache"], df["Disease"])
-
-plt.xlabel("Headache (0 = No, 1 = Yes)")
-plt.ylabel("Disease")
-plt.title("Headache vs Disease")
-
-plt.show()
+model.fit(X, y)
 
 
-# 📊 Visualization 4: Fatigue vs Disease
+# Predict Disease
 
-plt.scatter(df["Fatigue"], df["Disease"])
+prediction = model.predict([[1, 1, 1, 1]])
 
-plt.xlabel("Fatigue (0 = No, 1 = Yes)")
-plt.ylabel("Disease")
-plt.title("Fatigue vs Disease")
-
-plt.show()
+print("\nPredicted Disease:")
+print(prediction[0])

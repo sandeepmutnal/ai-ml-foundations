@@ -1,9 +1,10 @@
 # Project 6
-# Disease Prediction System (Interactive Version)
+# Disease Prediction GUI App
 
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
+import tkinter as tk
 
 
 # Dataset
@@ -17,8 +18,6 @@ data = {
 }
 
 df = pd.DataFrame(data)
-
-print("Disease Dataset Loaded Successfully ✅\n")
 
 
 # Features and Label
@@ -44,28 +43,66 @@ model = DecisionTreeClassifier()
 model.fit(X_train, y_train)
 
 
-# Accuracy
+# Prediction Function
 
-accuracy = model.score(X_test, y_test)
+def predict_disease():
+    try:
+        fever = int(entry_fever.get())
+        cough = int(entry_cough.get())
+        headache = int(entry_headache.get())
+        fatigue = int(entry_fatigue.get())
 
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
+        prediction = model.predict([[fever, cough, headache, fatigue]])
 
+        result_label.config(
+            text="🩺 Predicted Disease: " + prediction[0]
+        )
 
-# User Input
-
-print("\nEnter Symptoms (1 = Yes, 0 = No)")
-
-fever = int(input("Fever: "))
-cough = int(input("Cough: "))
-headache = int(input("Headache: "))
-fatigue = int(input("Fatigue: "))
-
-
-# Prediction
-
-prediction = model.predict([[fever, cough, headache, fatigue]])
+    except:
+        result_label.config(text="Please enter only 0 or 1")
 
 
-# Final Output
+# GUI Window
 
-print("\n🩺 Predicted Disease:", prediction[0])
+window = tk.Tk()
+window.title("Disease Prediction AI App")
+window.geometry("400x350")
+
+
+# Inputs
+
+tk.Label(window, text="Fever (1 = Yes, 0 = No)").pack()
+entry_fever = tk.Entry(window)
+entry_fever.pack()
+
+tk.Label(window, text="Cough (1 = Yes, 0 = No)").pack()
+entry_cough = tk.Entry(window)
+entry_cough.pack()
+
+tk.Label(window, text="Headache (1 = Yes, 0 = No)").pack()
+entry_headache = tk.Entry(window)
+entry_headache.pack()
+
+tk.Label(window, text="Fatigue (1 = Yes, 0 = No)").pack()
+entry_fatigue = tk.Entry(window)
+entry_fatigue.pack()
+
+
+# Button
+
+tk.Button(
+    window,
+    text="Predict Disease",
+    command=predict_disease
+).pack(pady=10)
+
+
+# Result Label
+
+result_label = tk.Label(window, text="")
+result_label.pack()
+
+
+# Run App
+
+window.mainloop()

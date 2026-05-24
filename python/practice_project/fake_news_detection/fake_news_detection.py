@@ -1,11 +1,10 @@
 # Project 7
-# Fake News Detection System
+# Fake News Detection System (Interactive Version)
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report
 
 
 # Dataset
@@ -38,7 +37,6 @@ data = {
 df = pd.DataFrame(data)
 
 print("Dataset Loaded Successfully ✅\n")
-print(df)
 
 
 # Features and Labels
@@ -65,37 +63,40 @@ X_train_vectorized = vectorizer.fit_transform(X_train)
 X_test_vectorized = vectorizer.transform(X_test)
 
 
-# Model
+# Train Model
 
 model = MultinomialNB()
 
 model.fit(X_train_vectorized, y_train)
 
 
-# Predictions
-
-y_pred = model.predict(X_test_vectorized)
-
-print("\nPredictions:")
-print(y_pred)
-
-
 # Accuracy
 
 accuracy = model.score(X_test_vectorized, y_test)
 
-print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+print("Model Accuracy:", round(accuracy * 100, 2), "%")
 
 
-# Confusion Matrix
+# User Input
 
-cm = confusion_matrix(y_test, y_pred)
+print("\nEnter News Headline:")
 
-print("\nConfusion Matrix:")
-print(cm)
+user_news = input()
 
 
-# Classification Report
+# Convert Text into Numbers
 
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred))
+user_news_vector = vectorizer.transform([user_news])
+
+
+# Prediction
+
+prediction = model.predict(user_news_vector)
+
+
+# Final Result
+
+if prediction[0] == "Fake":
+    print("\n❌ Fake News Detected")
+else:
+    print("\n✅ Real News")

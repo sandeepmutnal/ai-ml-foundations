@@ -1,10 +1,11 @@
 # Project 7
-# Fake News Detection System (Interactive Version)
+# Fake News Detection GUI App
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
+import tkinter as tk
 
 
 # Dataset
@@ -36,8 +37,6 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
-
 
 # Features and Labels
 
@@ -60,7 +59,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 vectorizer = TfidfVectorizer()
 
 X_train_vectorized = vectorizer.fit_transform(X_train)
-X_test_vectorized = vectorizer.transform(X_test)
 
 
 # Train Model
@@ -70,33 +68,72 @@ model = MultinomialNB()
 model.fit(X_train_vectorized, y_train)
 
 
-# Accuracy
+# Prediction Function
 
-accuracy = model.score(X_test_vectorized, y_test)
+def predict_news():
+    try:
+        news_text = news_entry.get()
 
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
+        news_vector = vectorizer.transform([news_text])
 
+        prediction = model.predict(news_vector)
 
-# User Input
+        if prediction[0] == "Fake":
+            result_label.config(text="❌ Fake News Detected")
+        else:
+            result_label.config(text="✅ Real News")
 
-print("\nEnter News Headline:")
-
-user_news = input()
-
-
-# Convert Text into Numbers
-
-user_news_vector = vectorizer.transform([user_news])
-
-
-# Prediction
-
-prediction = model.predict(user_news_vector)
+    except:
+        result_label.config(text="Error in prediction")
 
 
-# Final Result
+# GUI Window
 
-if prediction[0] == "Fake":
-    print("\n❌ Fake News Detected")
-else:
-    print("\n✅ Real News")
+window = tk.Tk()
+
+window.title("Fake News Detection AI App")
+
+window.geometry("500x300")
+
+
+# Title
+
+title_label = tk.Label(
+    window,
+    text="Fake News Detection System",
+    font=("Arial", 16)
+)
+
+title_label.pack(pady=10)
+
+
+# Input
+
+tk.Label(window, text="Enter News Headline").pack()
+
+news_entry = tk.Entry(window, width=50)
+
+news_entry.pack(pady=10)
+
+
+# Button
+
+predict_button = tk.Button(
+    window,
+    text="Predict News",
+    command=predict_news
+)
+
+predict_button.pack(pady=10)
+
+
+# Result
+
+result_label = tk.Label(window, text="", font=("Arial", 14))
+
+result_label.pack(pady=20)
+
+
+# Run App
+
+window.mainloop()

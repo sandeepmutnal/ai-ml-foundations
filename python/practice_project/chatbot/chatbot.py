@@ -1,5 +1,8 @@
 # Project 8
-# Basic AI Chatbot
+# NLP Preprocessing Chatbot
+
+import string
+
 
 print("🤖 AI Chatbot Started")
 print("Type 'bye' to stop the chatbot\n")
@@ -7,10 +10,24 @@ print("Type 'bye' to stop the chatbot\n")
 
 while True:
 
-    user_input = input("You: ").lower()
+    # User Input
+
+    user_input = input("You: ")
 
 
-    # Greetings
+    # Convert to lowercase
+
+    user_input = user_input.lower()
+
+
+    # Remove punctuation
+
+    user_input = user_input.translate(
+        str.maketrans('', '', string.punctuation)
+    )
+
+
+    # Chatbot Responses
 
     if user_input == "hello":
         print("Bot: Hello! Welcome!")
@@ -20,6 +37,12 @@ while True:
 
     elif user_input == "what is your name":
         print("Bot: I am an AI chatbot.")
+
+    elif user_input == "python":
+        print("Bot: Python is a powerful programming language.")
+
+    elif user_input == "help":
+        print("Bot: I can answer simple questions.")
 
     elif user_input == "bye":
         print("Bot: Goodbye!")

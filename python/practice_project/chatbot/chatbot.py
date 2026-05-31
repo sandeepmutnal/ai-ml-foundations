@@ -1,6 +1,8 @@
 # Project 8
-# Multi-Intent AI Assistant
+# GUI AI Assistant
 
+import tkinter as tk
+from tkinter import scrolledtext
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -35,21 +37,24 @@ responses = [
 ]
 
 
-# Vectorization
+# TF-IDF
 
 vectorizer = TfidfVectorizer()
-
 question_vectors = vectorizer.fit_transform(questions)
 
-print("🤖 AI Assistant Started")
-print("Type 'bye' to exit.\n")
 
+# Chat Function
 
-while True:
+def send_message():
 
-    user_input = input("You: ")
+    user_message = entry.get()
 
-    user_vector = vectorizer.transform([user_input])
+    if not user_message.strip():
+        return
+
+    chat_area.insert(tk.END, f"You: {user_message}\n")
+
+    user_vector = vectorizer.transform([user_message])
 
     similarity = cosine_similarity(
         user_vector,
@@ -61,11 +66,53 @@ while True:
     best_score = similarity[0][best_match]
 
     if best_score > 0.3:
-
-        print("Bot:", responses[best_match])
-
-        if questions[best_match] == "bye":
-            break
-
+        bot_response = responses[best_match]
     else:
-        print("Bot: Sorry, I don't understand that yet.")
+        bot_response = "Sorry, I don't understand that yet."
+
+    chat_area.insert(tk.END, f"Bot: {bot_response}\n\n")
+
+    entry.delete(0, tk.END)
+
+
+# GUI Window
+
+window = tk.Tk()
+window.title("AI Assistant")
+window.geometry("600x500")
+
+
+# Chat Area
+
+chat_area = scrolledtext.ScrolledText(
+    window,
+    wrap=tk.WORD,
+    width=70,
+    height=20
+)
+
+chat_area.pack(pady=10)
+
+
+# Input Frame
+
+frame = tk.Frame(window)
+frame.pack()
+
+
+entry = tk.Entry(frame, width=50)
+entry.pack(side=tk.LEFT, padx=5)
+
+
+send_button = tk.Button(
+    frame,
+    text="Send",
+    command=send_message
+)
+
+send_button.pack(side=tk.LEFT)
+
+
+# Run App
+
+window.mainloop()

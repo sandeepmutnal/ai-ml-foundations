@@ -2,11 +2,13 @@
 # Resume Screening AI System
 
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 print("📄 Resume Screening AI System Started\n")
 
 
-# Sample Resume Dataset
+# Dataset
 
 data = {
     "Resume": [
@@ -26,9 +28,26 @@ data = {
     ]
 }
 
-
 df = pd.DataFrame(data)
 
 print("Dataset Loaded Successfully ✅\n")
 
-print(df)
+
+# Resume Text
+
+resumes = df["Resume"]
+
+
+# TF-IDF Vectorization
+
+vectorizer = TfidfVectorizer()
+
+resume_vectors = vectorizer.fit_transform(resumes)
+
+print("TF-IDF Vectorization Completed ✅")
+
+print("\nShape:")
+print(resume_vectors.shape)
+
+print("\nFeatures:")
+print(vectorizer.get_feature_names_out())

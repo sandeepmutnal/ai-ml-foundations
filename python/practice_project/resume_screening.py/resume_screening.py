@@ -1,11 +1,11 @@
 # Project 9
-# Resume Screening AI System
+# Resume Screening AI System (Ranking Engine)
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("📄 Resume Screening AI System Started\n")
+print("📄 Resume Ranking AI System Started\n")
 
 
 # Dataset
@@ -19,35 +19,58 @@ data = {
         "AI engineer working on deep learning and NLP projects"
     ],
 
-    "Job_Role": [
-        "Data Scientist",
-        "Web Developer",
-        "Data Scientist",
-        "Mobile Developer",
-        "AI Engineer"
+    "Name": [
+        "Aarav",
+        "Diya",
+        "Rohan",
+        "Kiran",
+        "Sana"
     ]
 }
 
+
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
 
+# Job Description
 
-# Resume Text
-
-resumes = df["Resume"]
+job_description = "Python machine learning SQL data analysis"
 
 
 # TF-IDF Vectorization
 
 vectorizer = TfidfVectorizer()
 
-resume_vectors = vectorizer.fit_transform(resumes)
+resume_vectors = vectorizer.fit_transform(df["Resume"])
+job_vector = vectorizer.transform([job_description])
 
-print("TF-IDF Vectorization Completed ✅")
 
-print("\nShape:")
-print(resume_vectors.shape)
+# Similarity Calculation
 
-print("\nFeatures:")
-print(vectorizer.get_feature_names_out())
+similarity_scores = cosine_similarity(job_vector, resume_vectors)[0]
+
+
+# Add Scores to DataFrame
+
+df["Score"] = similarity_scores
+
+
+# Sort Candidates
+
+df_sorted = df.sort_values(by="Score", ascending=False)
+
+
+# Output Results
+
+print("🏆 Candidate Ranking:\n")
+
+for index, row in df_sorted.iterrows():
+    print(f"{row['Name']} - Score: {round(row['Score'], 3)}")
+
+
+# Best Candidate
+
+best_candidate = df_sorted.iloc[0]
+
+print("\n🥇 Best Match:")
+print(best_candidate["Name"], "with score", round(best_candidate["Score"], 3))

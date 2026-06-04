@@ -1,11 +1,11 @@
 # Project 9
-# Resume Screening AI System (Ranking Engine)
+# Interactive Resume Screening AI System
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("📄 Resume Ranking AI System Started\n")
+print("📄 Interactive Resume Screening AI System Started\n")
 
 
 # Dataset
@@ -32,16 +32,21 @@ data = {
 df = pd.DataFrame(data)
 
 
-# Job Description
-
-job_description = "Python machine learning SQL data analysis"
-
-
 # TF-IDF Vectorization
 
 vectorizer = TfidfVectorizer()
 
 resume_vectors = vectorizer.fit_transform(df["Resume"])
+
+
+# USER INPUT (Interactive)
+
+print("🧑 Enter Job Description:")
+job_description = input()
+
+
+# Convert Job Description into Vector
+
 job_vector = vectorizer.transform([job_description])
 
 
@@ -50,7 +55,7 @@ job_vector = vectorizer.transform([job_description])
 similarity_scores = cosine_similarity(job_vector, resume_vectors)[0]
 
 
-# Add Scores to DataFrame
+# Add Scores
 
 df["Score"] = similarity_scores
 
@@ -60,9 +65,9 @@ df["Score"] = similarity_scores
 df_sorted = df.sort_values(by="Score", ascending=False)
 
 
-# Output Results
+# Output Ranking
 
-print("🏆 Candidate Ranking:\n")
+print("\n🏆 Candidate Ranking:\n")
 
 for index, row in df_sorted.iterrows():
     print(f"{row['Name']} - Score: {round(row['Score'], 3)}")

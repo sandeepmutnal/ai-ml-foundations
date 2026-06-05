@@ -1,12 +1,11 @@
 # Project 9
-# Interactive Resume Screening AI System
+# Resume Screening Dashboard
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("📄 Interactive Resume Screening AI System Started\n")
-
+print("📄 Resume Screening Dashboard Started\n")
 
 # Dataset
 
@@ -28,54 +27,57 @@ data = {
     ]
 }
 
-
 df = pd.DataFrame(data)
 
+# User Job Description
 
-# TF-IDF Vectorization
+job_description = input("Enter Job Description: ")
+
+# Vectorization
 
 vectorizer = TfidfVectorizer()
 
 resume_vectors = vectorizer.fit_transform(df["Resume"])
 
-
-# USER INPUT (Interactive)
-
-print("🧑 Enter Job Description:")
-job_description = input()
-
-
-# Convert Job Description into Vector
-
 job_vector = vectorizer.transform([job_description])
 
+# Similarity Scores
 
-# Similarity Calculation
+scores = cosine_similarity(
+    job_vector,
+    resume_vectors
+)[0]
 
-similarity_scores = cosine_similarity(job_vector, resume_vectors)[0]
+# Add Score Column
 
+df["Score"] = scores
 
-# Add Scores
+# Sort
 
-df["Score"] = similarity_scores
+df = df.sort_values(
+    by="Score",
+    ascending=False
+)
 
+# Add Rank
 
-# Sort Candidates
+df["Rank"] = range(1, len(df) + 1)
 
-df_sorted = df.sort_values(by="Score", ascending=False)
+# Dashboard Table
 
+dashboard = df[
+    ["Rank", "Name", "Score"]
+]
 
-# Output Ranking
+print("\n🏆 Candidate Dashboard\n")
 
-print("\n🏆 Candidate Ranking:\n")
-
-for index, row in df_sorted.iterrows():
-    print(f"{row['Name']} - Score: {round(row['Score'], 3)}")
-
+print(dashboard)
 
 # Best Candidate
 
-best_candidate = df_sorted.iloc[0]
+best = df.iloc[0]
 
-print("\n🥇 Best Match:")
-print(best_candidate["Name"], "with score", round(best_candidate["Score"], 3))
+print("\n🥇 Best Candidate:")
+print(best["Name"])
+
+print("Score:", round(best["Score"], 3))

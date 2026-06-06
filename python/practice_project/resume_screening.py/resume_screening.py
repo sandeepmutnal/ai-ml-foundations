@@ -1,11 +1,12 @@
 # Project 9
-# Resume Screening Dashboard
+# Resume Screening AI System (GUI)
 
+import tkinter as tk
+from tkinter import scrolledtext
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("📄 Resume Screening Dashboard Started\n")
 
 # Dataset
 
@@ -29,55 +30,95 @@ data = {
 
 df = pd.DataFrame(data)
 
-# User Job Description
 
-job_description = input("Enter Job Description: ")
-
-# Vectorization
+# TF-IDF Model
 
 vectorizer = TfidfVectorizer()
-
 resume_vectors = vectorizer.fit_transform(df["Resume"])
 
-job_vector = vectorizer.transform([job_description])
 
-# Similarity Scores
+# GUI Function
 
-scores = cosine_similarity(
-    job_vector,
-    resume_vectors
-)[0]
+def analyze_resumes():
 
-# Add Score Column
+    job_description = entry.get()
 
-df["Score"] = scores
+    if not job_description.strip():
+        result_box.insert(tk.END, "Please enter job description\n")
+        return
 
-# Sort
+    job_vector = vectorizer.transform([job_description])
 
-df = df.sort_values(
-    by="Score",
-    ascending=False
+    scores = cosine_similarity(job_vector, resume_vectors)[0]
+
+    df["Score"] = scores
+
+    sorted_df = df.sort_values(by="Score", ascending=False)
+
+    sorted_df["Rank"] = range(1, len(sorted_df) + 1)
+
+    result_box.delete("1.0", tk.END)
+
+    result_box.insert(tk.END, "🏆 Candidate Ranking:\n\n")
+
+    for _, row in sorted_df.iterrows():
+        result_box.insert(
+            tk.END,
+            f"{row['Rank']}. {row['Name']} - {round(row['Score']*100,2)}%\n"
+        )
+
+    best = sorted_df.iloc[0]
+
+    result_box.insert(tk.END, "\n🥇 Best Candidate:\n")
+    result_box.insert(tk.END, f"{best['Name']} ({round(best['Score']*100,2)}%)\n")
+
+
+# GUI Window
+
+window = tk.Tk()
+window.title("Resume Screening AI System")
+window.geometry("650x500")
+
+
+# Title
+
+title = tk.Label(
+    window,
+    text="AI Resume Screening System",
+    font=("Arial", 16)
 )
 
-# Add Rank
+title.pack(pady=10)
 
-df["Rank"] = range(1, len(df) + 1)
 
-# Dashboard Table
+# Input Box
 
-dashboard = df[
-    ["Rank", "Name", "Score"]
-]
+entry = tk.Entry(window, width=60)
+entry.pack(pady=10)
 
-print("\n🏆 Candidate Dashboard\n")
 
-print(dashboard)
+# Button
 
-# Best Candidate
+btn = tk.Button(
+    window,
+    text="Analyze Candidates",
+    command=analyze_resumes
+)
 
-best = df.iloc[0]
+btn.pack(pady=10)
 
-print("\n🥇 Best Candidate:")
-print(best["Name"])
 
-print("Score:", round(best["Score"], 3))
+# Output Area
+
+result_box = scrolledtext.ScrolledText(
+    window,
+    width=70,
+    height=20
+)
+
+result_box.pack(pady=10)
+
+
+# Run App
+
+window.mainloop()

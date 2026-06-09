@@ -1,9 +1,11 @@
 # Project 10
-# Movie Recommendation System
+# TF-IDF Movie Recommendation System
 
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-print("🎬 Movie Recommendation System Started\n")
+print("🎬 TF-IDF Movie Recommendation System Started\n")
 
 # Dataset
 
@@ -19,53 +21,81 @@ data = {
         "Inception"
     ],
 
-    "Genre": [
-        "Action",
-        "Action",
-        "Action",
-        "Action",
-        "Romance",
-        "Romance",
-        "Sci-Fi",
-        "Sci-Fi"
+    "Description": [
+        "superhero team saves the world",
+        "genius billionaire superhero fights enemies",
+        "super soldier protects humanity",
+        "god of thunder fights evil forces",
+        "romantic story on a ship",
+        "emotional love story",
+        "space exploration and science fiction adventure",
+        "dream manipulation science fiction thriller"
     ]
 }
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
+# TF-IDF
 
+vectorizer = TfidfVectorizer()
 
-# Function to Recommend Movies
+tfidf_matrix = vectorizer.fit_transform(
+    df["Description"]
+)
 
-def recommend_movies(movie_name):
+# Similarity Matrix
 
-    # Find genre of selected movie
-    selected_genre = df[df["Movie"] == movie_name]["Genre"].values[0]
+similarity_matrix = cosine_similarity(
+    tfidf_matrix
+)
 
-    print(f"\n🎯 Selected Movie: {movie_name}")
-    print(f"🎭 Genre: {selected_genre}\n")
-
-    # Recommend similar movies
-    recommendations = df[
-        (df["Genre"] == selected_genre) &
-        (df["Movie"] != movie_name)
-    ]
-
-    print("🎬 Recommended Movies:\n")
-
-    for movie in recommendations["Movie"]:
-        print("👉", movie)
-
+print("Dataset Loaded Successfully ✅")
 
 # User Input
 
-print("Enter a movie name from dataset:")
-user_movie = input()
+movie_name = input(
+    "\nEnter a movie name: "
+)
 
-# Check and Recommend
+# Check Movie
 
-if user_movie in df["Movie"].values:
-    recommend_movies(user_movie)
+if movie_name not in df["Movie"].values:
+    print("❌ Movie not found")
 else:
-    print("❌ Movie not found in dataset")
+
+    movie_index = df[
+        df["Movie"] == movie_name
+    ].index[0]
+
+    similarity_scores = list(
+        enumerate(
+            similarity_matrix[movie_index]
+        )
+    )
+
+    similarity_scores = sorted(
+        similarity_scores,
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+    print("\n🎬 Recommended Movies:\n")
+
+    count = 0
+
+    for i in similarity_scores:
+
+        movie_idx = i[0]
+
+        if df["Movie"][movie_idx] != movie_name:
+
+            print(
+                df["Movie"][movie_idx],
+                "- Similarity:",
+                round(i[1], 3)
+            )
+
+            count += 1
+
+        if count == 3:
+            break

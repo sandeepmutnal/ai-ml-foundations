@@ -1,11 +1,11 @@
 # Project 10
-# TF-IDF Movie Recommendation System
+# Recommendation Dashboard
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("🎬 TF-IDF Movie Recommendation System Started\n")
+print("🎬 Recommendation Dashboard Started\n")
 
 # Dataset
 
@@ -49,18 +49,17 @@ similarity_matrix = cosine_similarity(
     tfidf_matrix
 )
 
-print("Dataset Loaded Successfully ✅")
-
-# User Input
+print("Available Movies:\n")
+print(df["Movie"].tolist())
 
 movie_name = input(
-    "\nEnter a movie name: "
+    "\nEnter Movie Name: "
 )
 
-# Check Movie
-
 if movie_name not in df["Movie"].values:
+
     print("❌ Movie not found")
+
 else:
 
     movie_index = df[
@@ -79,23 +78,39 @@ else:
         reverse=True
     )
 
-    print("\n🎬 Recommended Movies:\n")
+    recommendations = []
 
-    count = 0
+    rank = 1
 
-    for i in similarity_scores:
+    for item in similarity_scores:
 
-        movie_idx = i[0]
+        idx = item[0]
+        score = item[1]
 
-        if df["Movie"][movie_idx] != movie_name:
+        if df["Movie"][idx] != movie_name:
 
-            print(
-                df["Movie"][movie_idx],
-                "- Similarity:",
-                round(i[1], 3)
+            recommendations.append(
+                [
+                    rank,
+                    df["Movie"][idx],
+                    round(score, 3)
+                ]
             )
 
-            count += 1
+            rank += 1
 
-        if count == 3:
+        if rank > 5:
             break
+
+    dashboard = pd.DataFrame(
+        recommendations,
+        columns=[
+            "Rank",
+            "Movie",
+            "Similarity"
+        ]
+    )
+
+    print("\n🎬 Recommendation Dashboard\n")
+
+    print(dashboard)

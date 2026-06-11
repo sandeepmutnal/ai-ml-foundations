@@ -1,11 +1,11 @@
 # Project 10
-# Recommendation Dashboard
+# Personalized Recommendation System
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-print("🎬 Recommendation Dashboard Started\n")
+print("🎬 Personalized Recommendation System\n")
 
 # Dataset
 
@@ -43,74 +43,72 @@ tfidf_matrix = vectorizer.fit_transform(
     df["Description"]
 )
 
-# Similarity Matrix
-
-similarity_matrix = cosine_similarity(
-    tfidf_matrix
-)
+# User Preferences
 
 print("Available Movies:\n")
 print(df["Movie"].tolist())
 
-movie_name = input(
-    "\nEnter Movie Name: "
-)
+print("\nEnter favorite movies separated by comma:")
 
-if movie_name not in df["Movie"].values:
+user_input = input()
 
-    print("❌ Movie not found")
+favorite_movies = [
+    movie.strip()
+    for movie in user_input.split(",")
+]
+
+# Create User Profile
+
+user_descriptions = []
+
+for movie in favorite_movies:
+
+    if movie in df["Movie"].values:
+
+        description = df[
+            df["Movie"] == movie
+        ]["Description"].values[0]
+
+        user_descriptions.append(
+            description
+        )
+
+if len(user_descriptions) == 0:
+
+    print("❌ No valid movies entered")
 
 else:
 
-    movie_index = df[
-        df["Movie"] == movie_name
-    ].index[0]
+    user_profile = " ".join(
+        user_descriptions
+    )
 
-    similarity_scores = list(
-        enumerate(
-            similarity_matrix[movie_index]
+    user_vector = vectorizer.transform(
+        [user_profile]
+    )
+
+    similarity_scores = cosine_similarity(
+        user_vector,
+        tfidf_matrix
+    )[0]
+
+    df["Similarity"] = similarity_scores
+
+    recommendations = df.sort_values(
+        by="Similarity",
+        ascending=False
+    )
+
+    recommendations = recommendations[
+        ~recommendations["Movie"].isin(
+            favorite_movies
         )
+    ]
+
+    print("\n🎯 Personalized Recommendations:\n")
+
+    print(
+        recommendations[
+            ["Movie", "Similarity"]
+        ].head(5)
     )
-
-    similarity_scores = sorted(
-        similarity_scores,
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    recommendations = []
-
-    rank = 1
-
-    for item in similarity_scores:
-
-        idx = item[0]
-        score = item[1]
-
-        if df["Movie"][idx] != movie_name:
-
-            recommendations.append(
-                [
-                    rank,
-                    df["Movie"][idx],
-                    round(score, 3)
-                ]
-            )
-
-            rank += 1
-
-        if rank > 5:
-            break
-
-    dashboard = pd.DataFrame(
-        recommendations,
-        columns=[
-            "Rank",
-            "Movie",
-            "Similarity"
-        ]
-    )
-
-    print("\n🎬 Recommendation Dashboard\n")
-
-    print(dashboard)

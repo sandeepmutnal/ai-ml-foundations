@@ -1,11 +1,11 @@
 # Project 10
-# Personalized Recommendation System
+# GUI Movie Recommendation System
 
+import tkinter as tk
+from tkinter import scrolledtext
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
-print("🎬 Personalized Recommendation System\n")
 
 # Dataset
 
@@ -43,41 +43,41 @@ tfidf_matrix = vectorizer.fit_transform(
     df["Description"]
 )
 
-# User Preferences
+# Recommendation Function
 
-print("Available Movies:\n")
-print(df["Movie"].tolist())
+def recommend():
 
-print("\nEnter favorite movies separated by comma:")
+    result_box.delete("1.0", tk.END)
 
-user_input = input()
+    user_input = entry.get()
 
-favorite_movies = [
-    movie.strip()
-    for movie in user_input.split(",")
-]
+    favorite_movies = [
+        movie.strip()
+        for movie in user_input.split(",")
+    ]
 
-# Create User Profile
+    user_descriptions = []
 
-user_descriptions = []
+    for movie in favorite_movies:
 
-for movie in favorite_movies:
+        if movie in df["Movie"].values:
 
-    if movie in df["Movie"].values:
+            description = df[
+                df["Movie"] == movie
+            ]["Description"].values[0]
 
-        description = df[
-            df["Movie"] == movie
-        ]["Description"].values[0]
+            user_descriptions.append(
+                description
+            )
 
-        user_descriptions.append(
-            description
+    if len(user_descriptions) == 0:
+
+        result_box.insert(
+            tk.END,
+            "❌ No valid movies entered."
         )
 
-if len(user_descriptions) == 0:
-
-    print("❌ No valid movies entered")
-
-else:
+        return
 
     user_profile = " ".join(
         user_descriptions
@@ -105,10 +105,77 @@ else:
         )
     ]
 
-    print("\n🎯 Personalized Recommendations:\n")
-
-    print(
-        recommendations[
-            ["Movie", "Similarity"]
-        ].head(5)
+    result_box.insert(
+        tk.END,
+        "🎬 Recommended Movies\n\n"
     )
+
+    for _, row in recommendations.head(5).iterrows():
+
+        result_box.insert(
+            tk.END,
+            f"{row['Movie']} - "
+            f"{round(row['Similarity']*100,2)}%\n"
+        )
+
+# GUI Window
+
+window = tk.Tk()
+
+window.title(
+    "AI Movie Recommendation System"
+)
+
+window.geometry("700x500")
+
+# Title
+
+title = tk.Label(
+    window,
+    text="🎬 AI Movie Recommendation System",
+    font=("Arial", 16)
+)
+
+title.pack(pady=10)
+
+# Available Movies
+
+movies_label = tk.Label(
+    window,
+    text="Available Movies:\nAvengers, Iron Man, Captain America, Thor, Titanic, The Notebook, Interstellar, Inception"
+)
+
+movies_label.pack(pady=5)
+
+# Input
+
+entry = tk.Entry(
+    window,
+    width=70
+)
+
+entry.pack(pady=10)
+
+# Button
+
+button = tk.Button(
+    window,
+    text="Get Recommendations",
+    command=recommend
+)
+
+button.pack(pady=10)
+
+# Output
+
+result_box = scrolledtext.ScrolledText(
+    window,
+    width=80,
+    height=15
+)
+
+result_box.pack(pady=10)
+
+# Run App
+
+window.mainloop()

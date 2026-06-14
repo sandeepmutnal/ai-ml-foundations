@@ -1,7 +1,10 @@
 # Project 11
-# Sentiment Analysis System
+# Sentiment Analysis using TF-IDF
 
 import pandas as pd
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 
 print("😊 Sentiment Analysis System Started\n")
 
@@ -35,6 +38,40 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
+# TF-IDF
 
-print(df)
+vectorizer = TfidfVectorizer()
+
+X = vectorizer.fit_transform(df["Text"])
+
+y = df["Sentiment"]
+
+# Train Model
+
+model = LogisticRegression()
+
+model.fit(X, y)
+
+print("✅ Model Trained Successfully")
+
+# Test Prediction
+
+test_text = [
+    "I love this service"
+]
+
+test_vector = vectorizer.transform(
+    test_text
+)
+
+prediction = model.predict(
+    test_vector
+)
+
+print("\nPrediction:")
+
+print(
+    test_text[0],
+    "→",
+    prediction[0]
+)

@@ -1,15 +1,13 @@
 # Project 11
-# Sentiment Analysis using TF-IDF
+# Interactive Sentiment Analysis System
 
 import pandas as pd
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
-print("😊 Sentiment Analysis System Started\n")
+print("😊 Interactive Sentiment Analysis System Started\n")
 
 # Dataset
-
 data = {
     "Text": [
         "I love this product",
@@ -22,7 +20,6 @@ data = {
         "Average quality",
         "Nothing special"
     ],
-
     "Sentiment": [
         "Positive",
         "Positive",
@@ -38,40 +35,27 @@ data = {
 
 df = pd.DataFrame(data)
 
-# TF-IDF
-
-vectorizer = TfidfVectorizer()
-
-X = vectorizer.fit_transform(df["Text"])
-
+# Features and Label
+X_text = df["Text"]
 y = df["Sentiment"]
 
+# TF-IDF
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(X_text)
+
 # Train Model
-
 model = LogisticRegression()
-
 model.fit(X, y)
 
 print("✅ Model Trained Successfully")
 
-# Test Prediction
+# User Input
+user_review = input("\nEnter your review: ")
 
-test_text = [
-    "I love this service"
-]
+# Convert input to vector
+user_vector = vectorizer.transform([user_review])
 
-test_vector = vectorizer.transform(
-    test_text
-)
+# Prediction
+prediction = model.predict(user_vector)
 
-prediction = model.predict(
-    test_vector
-)
-
-print("\nPrediction:")
-
-print(
-    test_text[0],
-    "→",
-    prediction[0]
-)
+print("\n🎯 Sentiment Result:", prediction[0])

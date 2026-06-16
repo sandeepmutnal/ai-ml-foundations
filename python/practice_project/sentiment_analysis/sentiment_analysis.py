@@ -1,13 +1,14 @@
 # Project 11
-# Interactive Sentiment Analysis System
+# Sentiment Analysis Model Evaluation
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-print("😊 Interactive Sentiment Analysis System Started\n")
+print("😊 Sentiment Analysis Evaluation Started\n")
 
-# Dataset
 data = {
     "Text": [
         "I love this product",
@@ -18,7 +19,10 @@ data = {
         "I hate this",
         "It is okay",
         "Average quality",
-        "Nothing special"
+        "Nothing special",
+        "Excellent service",
+        "Bad quality",
+        "Not good not bad"
     ],
     "Sentiment": [
         "Positive",
@@ -29,33 +33,47 @@ data = {
         "Negative",
         "Neutral",
         "Neutral",
+        "Neutral",
+        "Positive",
+        "Negative",
         "Neutral"
     ]
 }
 
 df = pd.DataFrame(data)
 
-# Features and Label
 X_text = df["Text"]
 y = df["Sentiment"]
 
-# TF-IDF
+X_train_text, X_test_text, y_train, y_test = train_test_split(
+    X_text,
+    y,
+    test_size=0.25,
+    random_state=42
+)
+
 vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(X_text)
 
-# Train Model
+X_train = vectorizer.fit_transform(X_train_text)
+X_test = vectorizer.transform(X_test_text)
+
 model = LogisticRegression()
-model.fit(X, y)
+model.fit(X_train, y_train)
 
-print("✅ Model Trained Successfully")
+y_pred = model.predict(X_test)
 
-# User Input
-user_review = input("\nEnter your review: ")
+accuracy = accuracy_score(y_test, y_pred)
 
-# Convert input to vector
-user_vector = vectorizer.transform([user_review])
+print("Model Accuracy:", round(accuracy * 100, 2), "%")
 
-# Prediction
-prediction = model.predict(user_vector)
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
 
-print("\n🎯 Sentiment Result:", prediction[0])
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+print("\nActual Values:")
+print(y_test.values)
+
+print("\nPredicted Values:")
+print(y_pred)

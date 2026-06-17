@@ -1,14 +1,12 @@
 # Project 11
-# Sentiment Analysis Model Evaluation
+# GUI Sentiment Analysis App
 
+import tkinter as tk
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-print("😊 Sentiment Analysis Evaluation Started\n")
-
+# Dataset
 data = {
     "Text": [
         "I love this product",
@@ -42,38 +40,55 @@ data = {
 
 df = pd.DataFrame(data)
 
-X_text = df["Text"]
+# Train model
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(df["Text"])
 y = df["Sentiment"]
 
-X_train_text, X_test_text, y_train, y_test = train_test_split(
-    X_text,
-    y,
-    test_size=0.25,
-    random_state=42
-)
-
-vectorizer = TfidfVectorizer()
-
-X_train = vectorizer.fit_transform(X_train_text)
-X_test = vectorizer.transform(X_test_text)
-
 model = LogisticRegression()
-model.fit(X_train, y_train)
+model.fit(X, y)
 
-y_pred = model.predict(X_test)
+# Prediction function
+def predict_sentiment():
+    review = entry.get()
 
-accuracy = accuracy_score(y_test, y_pred)
+    if review.strip() == "":
+        result_label.config(text="Please enter a review")
+        return
 
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
+    review_vector = vectorizer.transform([review])
+    prediction = model.predict(review_vector)[0]
 
-print("\nConfusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+    if prediction == "Positive":
+        result_label.config(text="😊 Positive Sentiment")
+    elif prediction == "Negative":
+        result_label.config(text="😡 Negative Sentiment")
+    else:
+        result_label.config(text="😐 Neutral Sentiment")
 
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred))
+# GUI
+window = tk.Tk()
+window.title("Sentiment Analysis AI App")
+window.geometry("500x300")
 
-print("\nActual Values:")
-print(y_test.values)
+title = tk.Label(
+    window,
+    text="Sentiment Analysis AI System",
+    font=("Arial", 16)
+)
+title.pack(pady=10)
 
-print("\nPredicted Values:")
-print(y_pred)
+entry = tk.Entry(window, width=60)
+entry.pack(pady=10)
+
+button = tk.Button(
+    window,
+    text="Analyze Sentiment",
+    command=predict_sentiment
+)
+button.pack(pady=10)
+
+result_label = tk.Label(window, text="", font=("Arial", 14))
+result_label.pack(pady=20)
+
+window.mainloop()

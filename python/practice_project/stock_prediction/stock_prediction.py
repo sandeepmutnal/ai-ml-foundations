@@ -1,11 +1,11 @@
 # Project 12
-# Stock Market Prediction AI
+# Stock Market Prediction AI - Visualization
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 print("📈 Stock Market Prediction AI Started\n")
 
-# Sample stock dataset
 data = {
     "Day": [1, 2, 3, 4, 5, 6, 7],
     "Open_Price": [100, 102, 101, 105, 107, 110, 108],
@@ -17,5 +17,23 @@ data = {
 
 df = pd.DataFrame(data)
 
-print("Dataset Loaded Successfully ✅\n")
 print(df)
+
+# Close price trend
+plt.plot(df["Day"], df["Close_Price"], marker="o")
+
+plt.title("Stock Close Price Trend")
+plt.xlabel("Day")
+plt.ylabel("Close Price")
+
+plt.grid(True)
+plt.show()
+
+# Volume trend
+plt.bar(df["Day"], df["Volume"])
+
+plt.title("Stock Volume Trend")
+plt.xlabel("Day")
+plt.ylabel("Volume")
+
+plt.show()

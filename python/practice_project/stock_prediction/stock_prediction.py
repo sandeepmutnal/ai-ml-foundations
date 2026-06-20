@@ -1,8 +1,8 @@
 # Project 12
-# Stock Market Prediction AI - Visualization
+# Stock Market Prediction AI - Model Training
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 print("📈 Stock Market Prediction AI Started\n")
 
@@ -17,23 +17,19 @@ data = {
 
 df = pd.DataFrame(data)
 
+print("Dataset:\n")
 print(df)
 
-# Close price trend
-plt.plot(df["Day"], df["Close_Price"], marker="o")
+# Features and Label
+X = df[["Open_Price", "High_Price", "Low_Price", "Volume"]]
+y = df["Close_Price"]
 
-plt.title("Stock Close Price Trend")
-plt.xlabel("Day")
-plt.ylabel("Close Price")
+# Train model
+model = LinearRegression()
+model.fit(X, y)
 
-plt.grid(True)
-plt.show()
+# Predict close price
+prediction = model.predict([[111, 114, 109, 1900]])
 
-# Volume trend
-plt.bar(df["Day"], df["Volume"])
-
-plt.title("Stock Volume Trend")
-plt.xlabel("Day")
-plt.ylabel("Volume")
-
-plt.show()
+print("\nPredicted Close Price:")
+print(round(prediction[0], 2))

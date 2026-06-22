@@ -1,15 +1,13 @@
 # Project 12
-# Stock Market Prediction AI - Model Evaluation
+# Stock Market Prediction AI - Interactive Version
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error
 
-print("📈 Stock Market Prediction AI Started\n")
+print("📈 Interactive Stock Price Predictor Started\n")
 
 data = {
-    "Day": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     "Open_Price": [100, 102, 101, 105, 107, 110, 108, 112, 115, 117],
     "High_Price": [105, 106, 104, 108, 111, 113, 112, 116, 118, 120],
     "Low_Price": [98, 100, 99, 103, 105, 108, 106, 110, 113, 115],
@@ -29,13 +27,16 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-predictions = model.predict(X_test)
-
-print("Predictions:", predictions)
-print("Actual:", y_test.values)
-
 accuracy = model.score(X_test, y_test)
-error = mean_absolute_error(y_test, predictions)
+print("Model Accuracy:", round(accuracy * 100, 2), "%")
 
-print("\nModel Accuracy (R²):", round(accuracy, 2))
-print("Mean Absolute Error:", round(error, 2))
+print("\nEnter Stock Details:")
+
+open_price = float(input("Open Price: "))
+high_price = float(input("High Price: "))
+low_price = float(input("Low Price: "))
+volume = float(input("Volume: "))
+
+prediction = model.predict([[open_price, high_price, low_price, volume]])
+
+print("\n🎯 Predicted Close Price:", round(prediction[0], 2))

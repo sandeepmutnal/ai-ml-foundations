@@ -1,11 +1,10 @@
 # Project 12
-# Stock Market Prediction AI - Interactive Version
+# GUI Stock Market Prediction AI
 
+import tkinter as tk
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-
-print("📈 Interactive Stock Price Predictor Started\n")
 
 data = {
     "Open_Price": [100, 102, 101, 105, 107, 110, 108, 112, 115, 117],
@@ -27,16 +26,51 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-accuracy = model.score(X_test, y_test)
-print("Model Accuracy:", round(accuracy * 100, 2), "%")
 
-print("\nEnter Stock Details:")
+def predict_price():
+    try:
+        open_price = float(entry_open.get())
+        high_price = float(entry_high.get())
+        low_price = float(entry_low.get())
+        volume = float(entry_volume.get())
 
-open_price = float(input("Open Price: "))
-high_price = float(input("High Price: "))
-low_price = float(input("Low Price: "))
-volume = float(input("Volume: "))
+        prediction = model.predict([[open_price, high_price, low_price, volume]])
 
-prediction = model.predict([[open_price, high_price, low_price, volume]])
+        result_label.config(
+            text="Predicted Close Price: " + str(round(prediction[0], 2))
+        )
 
-print("\n🎯 Predicted Close Price:", round(prediction[0], 2))
+    except:
+        result_label.config(text="Please enter valid numbers")
+
+
+window = tk.Tk()
+window.title("Stock Price Prediction AI App")
+window.geometry("400x350")
+
+tk.Label(window, text="Open Price").pack()
+entry_open = tk.Entry(window)
+entry_open.pack()
+
+tk.Label(window, text="High Price").pack()
+entry_high = tk.Entry(window)
+entry_high.pack()
+
+tk.Label(window, text="Low Price").pack()
+entry_low = tk.Entry(window)
+entry_low.pack()
+
+tk.Label(window, text="Volume").pack()
+entry_volume = tk.Entry(window)
+entry_volume.pack()
+
+tk.Button(
+    window,
+    text="Predict Close Price",
+    command=predict_price
+).pack(pady=10)
+
+result_label = tk.Label(window, text="")
+result_label.pack()
+
+window.mainloop()

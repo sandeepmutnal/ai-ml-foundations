@@ -1,18 +1,28 @@
 # Project 13
-# Face Recognition System - Step 1
-# Face Detection using OpenCV
+# Face Recognition System - Step 2
+# Capture and Save Face Images
 
 import cv2
+import os
 
-print("🙂 Face Recognition System Started")
+print("🙂 Face Dataset Collection Started")
 
-# Load Haar Cascade face detector
+# Create dataset folder
+dataset_path = "face_dataset"
+os.makedirs(dataset_path, exist_ok=True)
+
+person_name = input("Enter person name: ")
+
+person_folder = os.path.join(dataset_path, person_name)
+os.makedirs(person_folder, exist_ok=True)
+
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
 
-# Start webcam
 camera = cv2.VideoCapture(0)
+
+count = 0
 
 while True:
     ret, frame = camera.read()
@@ -30,6 +40,17 @@ while True:
     )
 
     for (x, y, w, h) in faces:
+        count += 1
+
+        face_image = gray[y:y+h, x:x+w]
+
+        file_path = os.path.join(
+            person_folder,
+            f"{person_name}_{count}.jpg"
+        )
+
+        cv2.imwrite(file_path, face_image)
+
         cv2.rectangle(
             frame,
             (x, y),
@@ -38,11 +59,25 @@ while True:
             2
         )
 
-    cv2.imshow("Face Detection", frame)
+        cv2.putText(
+            frame,
+            f"Saved: {count}",
+            (x, y - 10),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (0, 255, 0),
+            2
+        )
 
-    # Press q to stop
+    cv2.imshow("Collecting Face Dataset", frame)
+
     if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+    if count >= 50:
         break
 
 camera.release()
 cv2.destroyAllWindows()
+
+print(f"✅ Saved {count} face images for {person_name}")

@@ -1,83 +1,47 @@
 # Project 13
-# Face Recognition System - Step 2
-# Capture and Save Face Images
+# Face Recognition System - Step 3
+# Train Face Recognition Model
 
 import cv2
 import os
+import numpy as np
 
-print("🙂 Face Dataset Collection Started")
-
-# Create dataset folder
 dataset_path = "face_dataset"
-os.makedirs(dataset_path, exist_ok=True)
 
-person_name = input("Enter person name: ")
+recognizer = cv2.face.LBPHFaceRecognizer_create()
 
-person_folder = os.path.join(dataset_path, person_name)
-os.makedirs(person_folder, exist_ok=True)
+faces = []
+labels = []
+label_names = {}
+label_id = 0
 
-face_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-)
+for person_name in os.listdir(dataset_path):
+    person_folder = os.path.join(dataset_path, person_name)
 
-camera = cv2.VideoCapture(0)
+    if not os.path.isdir(person_folder):
+        continue
 
-count = 0
+    label_names[label_id] = person_name
 
-while True:
-    ret, frame = camera.read()
+    for image_name in os.listdir(person_folder):
+        image_path = os.path.join(person_folder, image_name)
 
-    if not ret:
-        print("Camera not working")
-        break
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if image is None:
+            continue
 
-    faces = face_cascade.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=5
-    )
+        faces.append(image)
+        labels.append(label_id)
 
-    for (x, y, w, h) in faces:
-        count += 1
+    label_id += 1
 
-        face_image = gray[y:y+h, x:x+w]
+recognizer.train(faces, np.array(labels))
 
-        file_path = os.path.join(
-            person_folder,
-            f"{person_name}_{count}.jpg"
-        )
+recognizer.save("face_model.yml")
 
-        cv2.imwrite(file_path, face_image)
+np.save("label_names.npy", label_names)
 
-        cv2.rectangle(
-            frame,
-            (x, y),
-            (x + w, y + h),
-            (0, 255, 0),
-            2
-        )
-
-        cv2.putText(
-            frame,
-            f"Saved: {count}",
-            (x, y - 10),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (0, 255, 0),
-            2
-        )
-
-    cv2.imshow("Collecting Face Dataset", frame)
-
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-
-    if count >= 50:
-        break
-
-camera.release()
-cv2.destroyAllWindows()
-
-print(f"✅ Saved {count} face images for {person_name}")
+print("✅ Face recognition model trained successfully")
+print("✅ Model saved as face_model.yml")
+print("✅ Labels saved as label_names.npy")

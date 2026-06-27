@@ -1,47 +1,62 @@
 # Project 13
-# Face Recognition System - Step 3
-# Train Face Recognition Model
+# Face Recognition System - Step 4
+# Real-Time Face Recognition
 
 import cv2
-import os
 import numpy as np
 
-dataset_path = "face_dataset"
-
 recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read("face_model.yml")
 
-faces = []
-labels = []
-label_names = {}
-label_id = 0
+label_names = np.load("label_names.npy", allow_pickle=True).item()
 
-for person_name in os.listdir(dataset_path):
-    person_folder = os.path.join(dataset_path, person_name)
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
 
-    if not os.path.isdir(person_folder):
-        continue
+camera = cv2.VideoCapture(0)
 
-    label_names[label_id] = person_name
+while True:
+    ret, frame = camera.read()
 
-    for image_name in os.listdir(person_folder):
-        image_path = os.path.join(person_folder, image_name)
+    if not ret:
+        print("Camera not working")
+        break
 
-        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        if image is None:
-            continue
+    faces = face_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5
+    )
 
-        faces.append(image)
-        labels.append(label_id)
+    for (x, y, w, h) in faces:
+        face_image = gray[y:y+h, x:x+w]
 
-    label_id += 1
+        label, confidence = recognizer.predict(face_image)
 
-recognizer.train(faces, np.array(labels))
+        name = label_names.get(label, "Unknown")
 
-recognizer.save("face_model.yml")
+        if confidence > 80:
+            name = "Unknown"
 
-np.save("label_names.npy", label_names)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-print("✅ Face recognition model trained successfully")
-print("✅ Model saved as face_model.yml")
-print("✅ Labels saved as label_names.npy")
+        cv2.putText(
+            frame,
+            f"{name} ({round(confidence, 2)})",
+            (x, y - 10),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (0, 255, 0),
+            2
+        )
+
+    cv2.imshow("Real-Time Face Recognition", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+camera.release()
+cv2.destroyAllWindows()

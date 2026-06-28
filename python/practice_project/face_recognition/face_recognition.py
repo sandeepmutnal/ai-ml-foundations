@@ -1,6 +1,6 @@
 # Project 13
-# Face Recognition System - Step 4
-# Real-Time Face Recognition
+# Face Recognition System - Step 5
+# Real-Time Recognition with Unknown Face Alert
 
 import cv2
 import numpy as np
@@ -40,6 +40,9 @@ while True:
 
         if confidence > 80:
             name = "Unknown"
+            alert_text = "Unknown Face Detected!"
+        else:
+            alert_text = f"Welcome {name}"
 
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
@@ -53,7 +56,17 @@ while True:
             2
         )
 
-    cv2.imshow("Real-Time Face Recognition", frame)
+        cv2.putText(
+            frame,
+            alert_text,
+            (20, 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 0, 255),
+            2
+        )
+
+    cv2.imshow("Face Recognition Alert System", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break

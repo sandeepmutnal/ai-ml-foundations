@@ -1,6 +1,5 @@
 # Project 13
-# Face Recognition System - Step 5
-# Real-Time Recognition with Unknown Face Alert
+# Final Face Recognition System
 
 import cv2
 import numpy as np
@@ -15,6 +14,9 @@ face_cascade = cv2.CascadeClassifier(
 )
 
 camera = cv2.VideoCapture(0)
+
+print("✅ Face Recognition App Started")
+print("Press 'q' to quit")
 
 while True:
     ret, frame = camera.read()
@@ -40,33 +42,35 @@ while True:
 
         if confidence > 80:
             name = "Unknown"
-            alert_text = "Unknown Face Detected!"
+            color = (0, 0, 255)
+            message = "Unknown Face Detected"
         else:
-            alert_text = f"Welcome {name}"
+            color = (0, 255, 0)
+            message = f"Welcome {name}"
 
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), color, 2)
 
         cv2.putText(
             frame,
-            f"{name} ({round(confidence, 2)})",
+            f"{name} | Confidence: {round(confidence, 2)}",
             (x, y - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (0, 255, 0),
+            0.7,
+            color,
             2
         )
 
         cv2.putText(
             frame,
-            alert_text,
+            message,
             (20, 40),
             cv2.FONT_HERSHEY_SIMPLEX,
             1,
-            (0, 0, 255),
+            color,
             2
         )
 
-    cv2.imshow("Face Recognition Alert System", frame)
+    cv2.imshow("Final Face Recognition App", frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
